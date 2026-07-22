@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:catatkas/core/theme.dart';
@@ -64,32 +63,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dateFormatted = "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}";
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: Stack(
         children: [
-          // Background Dekorasi Modern (Glow effect)
+          // Ambient Glow Backdrop
           Positioned(
-            top: -100,
-            left: -100,
+            top: -120.h,
+            right: -80.w,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 320.r,
+              height: 320.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.maroon.withOpacity(0.05),
+                color: AppTheme.maroon.withOpacity(0.08),
               ),
             ),
           ),
           Positioned(
-            top: 200,
-            right: -150,
+            top: 240.h,
+            left: -120.w,
             child: Container(
-              width: 300,
-              height: 300,
+              width: 280.r,
+              height: 280.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.gold.withOpacity(0.05),
+                color: AppTheme.gold.withOpacity(0.08),
               ),
             ),
           ),
@@ -98,35 +100,60 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header (App Bar Custom)
+                // 1. Header Profil & Tanggal
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 16.0.h),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Text(
-                            'Selamat Datang,',
-                            style: TextStyle(fontSize: 16.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
+                          Container(
+                            width: 48.r,
+                            height: 48.r,
+                            decoration: BoxDecoration(
+                              gradient: AppTheme.primaryGradient,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(color: AppTheme.maroon.withOpacity(0.25), blurRadius: 10, offset: const Offset(0, 4)),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                'KM',
+                                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                            ),
                           ),
-                          Text(
-                            'Warga Manggihan',
-                            style: TextStyle(fontSize: 24.sp, color: AppTheme.textDark, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                          SizedBox(width: 14.w),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Kas UMKM • $dateFormatted',
+                                style: TextStyle(fontSize: 13.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                'Desa Manggihan',
+                                style: TextStyle(fontSize: 20.sp, color: AppTheme.textDark, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
                           color: Colors.white,
+                          borderRadius: BorderRadius.circular(16.r),
+                          border: Border.all(color: Colors.grey.withOpacity(0.15)),
                           boxShadow: [
-                            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                            BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4)),
                           ],
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.settings_outlined, color: AppTheme.textDark),
+                          icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 22.sp),
+                          tooltip: 'Pengaturan',
                           onPressed: () async {
                             await Navigator.push(context, _createRoute(const SettingsScreen()));
                             _loadSaldo();
@@ -137,81 +164,77 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
-                SizedBox(height: 16.h),
+                SizedBox(height: 12.h),
 
-                // Main Balance Card (Fintech Style)
+                // 2. Executive Balance Card (Fintech Card Style)
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween<double>(begin: 0.8, end: 1.0),
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutBack,
-                    builder: (context, scale, child) {
-                      return Transform.scale(
-                        scale: scale,
-                        child: child,
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(32.r),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF8B0000), Color(0xFF4A0000)], // Deep maroon to blackish red
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(24.r),
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(28.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.maroon.withOpacity(0.35),
+                          blurRadius: 24,
+                          offset: const Offset(0, 12),
                         ),
-                        borderRadius: BorderRadius.circular(32.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF8B0000).withOpacity(0.3),
-                            blurRadius: 24,
-                            offset: const Offset(0, 12),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(8.r),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                child: Icon(Icons.account_balance_wallet, color: AppTheme.gold, size: 24),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(16.r),
                               ),
-                              SizedBox(width: 12.w),
-                              Text(
-                                'Saldo Hari Ini',
-                                style: TextStyle(
-                                  fontSize: 18.sp, 
-                                  fontWeight: FontWeight.w500, 
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 24.h),
-                          if (_isLoading)
-                            const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppTheme.gold))
-                          else
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 500),
-                              transitionBuilder: (Widget child, Animation<double> animation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(0.0, 0.2),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.account_balance_wallet_rounded, color: AppTheme.gold, size: 16.sp),
+                                  SizedBox(width: 6.w),
+                                  Text(
+                                    'Saldo Kas Hari Ini',
+                                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.white),
                                   ),
-                                );
-                              },
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.refresh_rounded, color: Colors.white70, size: 20.sp),
+                              onPressed: _loadSaldo,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                        if (_isLoading)
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            child: const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppTheme.gold)),
+                          )
+                        else
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0.0, 0.2),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              height: 52.h,
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.centerLeft,
@@ -220,41 +243,61 @@ class _HomeScreenState extends State<HomeScreen> {
                                   key: ValueKey<double>(_saldoHariIni),
                                   style: TextStyle(
                                     color: _saldoHariIni >= 0 ? Colors.white : const Color(0xFFFF8A80),
-                                    fontSize: 44.sp,
-                                    fontWeight: FontWeight.w800,
+                                    fontSize: 42.sp,
+                                    fontWeight: FontWeight.w900,
                                     letterSpacing: -1,
                                   ),
                                 ),
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
 
-                SizedBox(height: 32.h),
+                SizedBox(height: 28.h),
 
-                // Quick Actions (E-Wallet Style)
+                // 3. Quick Action Cards (Modern Fintech Style)
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildQuickAction(
-                        icon: Icons.assessment_rounded, 
-                        label: 'Riwayat & Laporan', 
-                        onTap: () async {
-                          await Navigator.push(context, _createRoute(const HistoryScreen()));
-                          _loadSaldo();
-                        },
+                      Text(
+                        'Menu Utama',
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800, color: AppTheme.textDark),
                       ),
-                      _buildQuickAction(
-                        icon: Icons.inventory_2_rounded, 
-                        label: 'Produk', 
-                        onTap: () async {
-                          await Navigator.push(context, _createRoute(const ProductScreen()));
-                        },
+                      SizedBox(height: 14.h),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildMenuTile(
+                              title: 'Riwayat & Laporan',
+                              subtitle: 'Cetak PDF & Filter',
+                              icon: Icons.assessment_rounded,
+                              iconColor: AppTheme.maroon,
+                              iconBg: AppTheme.maroon.withOpacity(0.1),
+                              onTap: () async {
+                                await Navigator.push(context, _createRoute(const HistoryScreen()));
+                                _loadSaldo();
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 14.w),
+                          Expanded(
+                            child: _buildMenuTile(
+                              title: 'Katalog Produk',
+                              subtitle: 'Daftar Barang',
+                              icon: Icons.inventory_2_rounded,
+                              iconColor: AppTheme.gold,
+                              iconBg: AppTheme.gold.withOpacity(0.15),
+                              onTap: () async {
+                                await Navigator.push(context, _createRoute(const ProductScreen()));
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -262,23 +305,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 const Spacer(),
                 
-                // Big FAB (Catat Transaksi)
+                // 4. Primary Floating Action Button ("Catat Transaksi")
                 Padding(
-                  padding: EdgeInsets.all(24.0.r),
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween<double>(begin: 0.0, end: 1.0),
-                    duration: const Duration(milliseconds: 800),
-                    curve: Curves.easeOutQuart,
-                    builder: (context, opacity, child) {
-                      return Opacity(
-                        opacity: opacity,
-                        child: Transform.translate(
-                          offset: Offset(0, 20 * (1 - opacity)),
-                          child: child,
+                  padding: EdgeInsets.all(24.r),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(28.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.maroon.withOpacity(0.35),
+                          blurRadius: 16,
+                          offset: const Offset(0, 8),
                         ),
-                      );
-                    },
+                      ],
+                    ),
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                      ),
                       onPressed: () async {
                         final bool? shouldRefresh = await Navigator.push(
                           context,
@@ -291,9 +335,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.add_circle_rounded, size: 28),
+                          Container(
+                            padding: EdgeInsets.all(4.r),
+                            decoration: const BoxDecoration(
+                              color: Colors.white24,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.add_rounded, size: 22.sp, color: Colors.white),
+                          ),
                           SizedBox(width: 12.w),
-                          Text('CATAT TRANSAKSI', style: TextStyle(fontSize: 20.sp)),
+                          Text(
+                            'CATAT TRANSAKSI',
+                            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800, letterSpacing: 0.5),
+                          ),
                         ],
                       ),
                     ),
@@ -307,25 +361,55 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildQuickAction({required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _buildMenuTile({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4)),
+      child: Container(
+        padding: EdgeInsets.all(18.r),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24.r),
+          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 12, offset: const Offset(0, 4)),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12.r),
+                  decoration: BoxDecoration(
+                    color: iconBg,
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  child: Icon(icon, size: 24.sp, color: iconColor),
+                ),
+                Icon(Icons.arrow_forward_ios_rounded, size: 14.sp, color: Colors.grey.shade400),
               ],
             ),
-            child: Icon(icon, size: 28, color: AppTheme.maroon),
-          ),
-          SizedBox(height: 8.h),
-          Text(label, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppTheme.textMuted)),
-        ],
+            SizedBox(height: 16.h),
+            Text(
+              title,
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              subtitle,
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: AppTheme.textMuted),
+            ),
+          ],
+        ),
       ),
     );
   }
