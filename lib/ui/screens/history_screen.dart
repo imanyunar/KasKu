@@ -109,27 +109,43 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (_transactions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Tidak ada data transaksi pada periode ini.', style: TextStyle(fontSize: 16.sp)),
+          content: Text('Tidak ada data transaksi pada periode ini.', style: TextStyle(fontSize: 14.sp)),
           backgroundColor: AppTheme.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         ),
       );
       return;
     }
 
-    try {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Membuat PDF... Tunggu sebentar.', style: TextStyle(fontSize: 16.sp)),
-          duration: const Duration(seconds: 2),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Container(
+          padding: EdgeInsets.all(20.r),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: AppTheme.maroon),
+              SizedBox(height: 14.h),
+              Text('Membuat PDF...', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark)),
+            ],
+          ),
         ),
-      );
+      ),
+    );
 
+    try {
       final result = await PdfHelper.generateReportPdf(_selectedFilter, _currentStart, _currentEnd);
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      Navigator.pop(context); // Tutup loading dialog
 
       // Buka PDF secara langsung menggunakan viewer bawaan HP / BlueStacks
       await OpenFilex.open(result.internalPath);
@@ -140,9 +156,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: AppTheme.green,
-          duration: const Duration(seconds: 4),
+          duration: const Duration(milliseconds: 2500),
           content: Text('PDF Berhasil Dibuat & Tersimpan di Download',
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(
             label: 'BAGIKAN',
             textColor: Colors.white,
@@ -156,6 +172,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       );
     } catch (e) {
       if (!mounted) return;
+      Navigator.pop(context); // Tutup loading dialog jika gagal
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       String errorMsg = e.toString();
       if (errorMsg.contains('Exception:')) {
@@ -163,10 +180,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal mencetak: $errorMsg', style: TextStyle(fontSize: 16.sp)),
+          content: Text('Gagal mencetak: $errorMsg', style: TextStyle(fontSize: 14.sp)),
           backgroundColor: AppTheme.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
         ),
       );
     }
@@ -177,15 +193,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-        title: Text('Hapus Data?', style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold)),
+        title: Text('Hapus Data?', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
         content: Text(
-          'Apakah Anda yakin ingin menghapus data "${item.name}"?',
-          style: TextStyle(fontSize: 16.sp),
+          'Hapus transaksi "${item.name}"?',
+          style: TextStyle(fontSize: 15.sp),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Batal', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+            child: Text('Batal', style: TextStyle(fontSize: 14.sp, color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -193,7 +209,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Ya, Hapus', style: TextStyle(fontSize: 16.sp, color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text('Hapus', style: TextStyle(fontSize: 14.sp, color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -206,9 +222,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          content: Text('Data berhasil dihapus', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          content: Text('Data berhasil dihapus', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           backgroundColor: AppTheme.green,
+          duration: const Duration(seconds: 2),
         ),
       );
       _loadData();
@@ -232,33 +249,39 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         title: const Text('Riwayat & Laporan'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 24.sp),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.picture_as_pdf_rounded, color: AppTheme.maroon, size: 26.sp),
-            tooltip: 'Cetak / Bagikan PDF',
-            onPressed: _exportPdf,
+          Container(
+            margin: EdgeInsets.only(right: 12.w),
+            decoration: BoxDecoration(
+              color: AppTheme.maroon.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.picture_as_pdf_rounded, color: AppTheme.maroon, size: 22.sp),
+              tooltip: 'Cetak / Bagikan PDF',
+              onPressed: _exportPdf,
+            ),
           ),
-          SizedBox(width: 8.w),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Filter Chips Periode (Horizontal Scrollable)
+              // 1. Filter Chips Periode (Clean Horizontal Bar)
               _buildFilterSection(),
-              SizedBox(height: 20.h),
+              SizedBox(height: 16.h),
 
-              // 2. Kartu Ringkasan Laporan (Responsive & Compact PDF Icon Button)
+              // 2. Kartu Ringkasan Keuangan (Clean, Spacious, No Duplicates)
               _buildSummaryCard(),
-              SizedBox(height: 24.h),
+              SizedBox(height: 20.h),
 
               // 3. Header Daftar Transaksi
               Row(
@@ -267,30 +290,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   Text(
                     'Daftar Transaksi',
                     style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800,
                       color: AppTheme.textDark,
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.grey.withOpacity(0.15)),
-                    ),
-                    child: Text(
-                      '${_transactions.length} Data',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textMuted,
-                      ),
+                  Text(
+                    '${_transactions.length} Data',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.textMuted,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: 10.h),
 
               // 4. List Transaksi
               if (_isLoading)
@@ -317,7 +332,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       child: Row(
         children: [
           ...filters.map((filter) => Padding(
-                padding: EdgeInsets.only(right: 8.w),
+                padding: EdgeInsets.only(right: 6.w),
                 child: _buildFilterChip(filter),
               )),
           _buildFilterChip(_isCustomMode() ? _selectedFilter : 'PILIH TANGGAL', isCustomButton: true),
@@ -376,27 +391,27 @@ class _HistoryScreenState extends State<HistoryScreen> {
         }
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        duration: const Duration(milliseconds: 150),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.maroon : Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: isSelected ? AppTheme.maroon : Colors.grey.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: isSelected ? AppTheme.maroon : Colors.grey.withOpacity(0.15)),
           boxShadow: isSelected
-              ? [BoxShadow(color: AppTheme.maroon.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))]
-              : [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 2))],
+              ? [BoxShadow(color: AppTheme.maroon.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))]
+              : [],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isCustomButton) ...[
-              Icon(Icons.calendar_month_rounded, size: 16.sp, color: isSelected ? Colors.white : AppTheme.textMuted),
-              SizedBox(width: 6.w),
+              Icon(Icons.calendar_today_rounded, size: 13.sp, color: isSelected ? Colors.white : AppTheme.textMuted),
+              SizedBox(width: 4.w),
             ],
             Text(
               text,
               style: TextStyle(
-                fontSize: 13.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.bold,
                 color: isSelected ? Colors.white : AppTheme.textMuted,
               ),
@@ -408,114 +423,84 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Widget _buildSummaryCard() {
+    final isLaba = _labaBersih >= 0;
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(18.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 15, offset: const Offset(0, 6)),
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
-        border: Border.all(color: Colors.grey.withOpacity(0.08)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Kartu
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Ringkasan Keuangan',
-                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark),
-              ),
-              InkWell(
-                onTap: _exportPdf,
-                borderRadius: BorderRadius.circular(12.r),
-                child: Container(
-                  padding: EdgeInsets.all(8.r),
-                  decoration: BoxDecoration(
-                    color: AppTheme.maroon.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.picture_as_pdf_rounded, color: AppTheme.maroon, size: 18.sp),
-                      SizedBox(width: 4.w),
-                      Text(
-                        'PDF',
-                        style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: AppTheme.maroon),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          const Divider(height: 1),
-          SizedBox(height: 16.h),
-
-          // Pemasukan & Pengeluaran (Auto-Scaling fitted text)
+          // Pemasukan vs Pengeluaran Row
           Row(
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.arrow_upward_rounded, color: AppTheme.green, size: 16.sp),
-                        SizedBox(width: 4.w),
-                        Text(
-                          'Pemasukan',
-                          style: TextStyle(fontSize: 13.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
-                        ),
-                      ],
+                    Container(
+                      padding: EdgeInsets.all(6.r),
+                      decoration: BoxDecoration(
+                        color: AppTheme.greenSoft,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Icons.arrow_upward_rounded, color: AppTheme.green, size: 16.sp),
                     ),
-                    SizedBox(height: 4.h),
-                    SizedBox(
-                      height: 26.h,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _formatCurrency(_totalPemasukan),
-                          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppTheme.green),
-                        ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Pemasukan', style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted)),
+                          SizedBox(height: 2.h),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _formatCurrency(_totalPemasukan),
+                              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppTheme.green),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Container(width: 1, height: 42.h, color: Colors.grey.withOpacity(0.2)),
-              SizedBox(width: 16.w),
+              SizedBox(width: 12.w),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.arrow_downward_rounded, color: AppTheme.red, size: 16.sp),
-                        SizedBox(width: 4.w),
-                        Text(
-                          'Pengeluaran',
-                          style: TextStyle(fontSize: 13.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
-                        ),
-                      ],
+                    Container(
+                      padding: EdgeInsets.all(6.r),
+                      decoration: BoxDecoration(
+                        color: AppTheme.redSoft,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Icons.arrow_downward_rounded, color: AppTheme.red, size: 16.sp),
                     ),
-                    SizedBox(height: 4.h),
-                    SizedBox(
-                      height: 26.h,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _formatCurrency(_totalPengeluaran),
-                          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppTheme.red),
-                        ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Pengeluaran', style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted)),
+                          SizedBox(height: 2.h),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _formatCurrency(_totalPengeluaran),
+                              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppTheme.red),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -523,38 +508,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
-          const Divider(height: 1),
-          SizedBox(height: 16.h),
+          SizedBox(height: 14.h),
 
-          // Laba / Rugi Bersih
-          Row(
-            children: [
-              Text(
-                'Untung / Rugi Bersih',
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppTheme.textDark),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: SizedBox(
-                  height: 28.h,
+          // Laba / Rugi Bersih (Clean Highlight Banner)
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: isLaba ? AppTheme.greenSoft : AppTheme.redSoft,
+              borderRadius: BorderRadius.circular(14.r),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Untung / Rugi Bersih',
+                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppTheme.textDark),
+                ),
+                Expanded(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerRight,
                     child: Text(
-                      _labaBersih >= 0
-                          ? '+ ${_formatCurrency(_labaBersih)}'
-                          : '- ${_formatCurrency(_labaBersih.abs())}',
+                      isLaba ? '+ ${_formatCurrency(_labaBersih)}' : '- ${_formatCurrency(_labaBersih.abs())}',
                       style: TextStyle(
-                        fontSize: 20.sp,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w900,
-                        color: _labaBersih >= 0 ? AppTheme.green : AppTheme.red,
+                        color: isLaba ? AppTheme.green : AppTheme.red,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -564,34 +549,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.h),
+        padding: EdgeInsets.symmetric(vertical: 36.h),
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(20.r),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 15)],
-              ),
-              child: Icon(Icons.folder_open_rounded, size: 64.sp, color: Colors.grey.shade300),
-            ),
-            SizedBox(height: 16.h),
+            Icon(Icons.folder_open_rounded, size: 54.sp, color: Colors.grey.shade300),
+            SizedBox(height: 12.h),
             Text(
               'Belum ada transaksi pada periode ini.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 14.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 16.h),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.maroon,
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
               ),
-              icon: Icon(Icons.add_circle_rounded, size: 20.sp),
-              label: Text('CATAT TRANSAKSI', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+              icon: Icon(Icons.add_rounded, size: 18.sp),
+              label: Text('CATAT TRANSAKSI', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
               onPressed: () async {
                 final result = await Navigator.push(
                   context,
@@ -621,10 +598,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       if (dateStr != lastDate) {
         items.add(
           Padding(
-            padding: EdgeInsets.only(top: 16.h, bottom: 8.h, left: 4.w),
+            padding: EdgeInsets.only(top: 14.h, bottom: 6.h, left: 2.w),
             child: Text(
               dateStr,
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppTheme.textMuted),
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: AppTheme.textMuted),
             ),
           ),
         );
@@ -638,40 +615,42 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
       items.add(
         Container(
-          margin: EdgeInsets.only(bottom: 12.h),
+          margin: EdgeInsets.only(bottom: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: Colors.grey.withOpacity(0.05)),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: Colors.grey.withOpacity(0.08)),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+              BoxShadow(color: Colors.black.withOpacity(0.015), blurRadius: 6, offset: const Offset(0, 2)),
             ],
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: () => _editTransaction(item),
-              borderRadius: BorderRadius.circular(20.r),
+              borderRadius: BorderRadius.circular(16.r),
               child: Padding(
-                padding: EdgeInsets.all(16.0.r),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
                 child: Row(
                   children: [
+                    // Icon Circle
                     Container(
-                      width: 44.r,
-                      height: 44.r,
+                      width: 38.r,
+                      height: 38.r,
                       decoration: BoxDecoration(
-                        color: item.isJual ? AppTheme.green.withOpacity(0.1) : AppTheme.red.withOpacity(0.1),
+                        color: item.isJual ? AppTheme.greenSoft : AppTheme.redSoft,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
                         child: Icon(
                           item.isJual ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
                           color: item.isJual ? AppTheme.green : AppTheme.red,
-                          size: 22.sp,
+                          size: 18.sp,
                         ),
                       ),
                     ),
                     SizedBox(width: 12.w),
+                    // Item Name & Subtitle
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -679,7 +658,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           Text(
                             item.name,
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 15.sp,
                               fontWeight: FontWeight.bold,
                               color: AppTheme.textDark,
                             ),
@@ -690,7 +669,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           Text(
                             '$qtyDisplay ${item.unit} • $timeStr',
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              fontSize: 12.sp,
                               color: AppTheme.textMuted,
                             ),
                           ),
@@ -698,27 +677,28 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    // Price & Trash Icon (Side by side clean row)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          height: 22.h,
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 130.w),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerRight,
                             child: Text(
                               _formatCurrency(item.price),
                               style: TextStyle(
-                                fontSize: 16.sp,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
                                 color: item.isJual ? AppTheme.green : AppTheme.red,
                               ),
                             ),
                           ),
                         ),
-                        SizedBox(height: 2.h),
+                        SizedBox(width: 4.w),
                         IconButton(
-                          icon: Icon(Icons.delete_outline_rounded, color: Colors.grey.shade400, size: 20.sp),
+                          icon: Icon(Icons.delete_outline_rounded, color: Colors.grey.shade300, size: 18.sp),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () => _confirmDelete(item),
