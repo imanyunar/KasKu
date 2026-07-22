@@ -18,7 +18,7 @@ class CatatKasApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'CatatKas BUMDes',
+          title: 'CatatKas UMKM',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           home: child,

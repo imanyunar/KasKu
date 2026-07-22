@@ -1,4 +1,4 @@
-# 📱 CatatKas BUMDes & UMKM (KasKu)
+# 📱 CatatKas UMKM (KasKu)
 
 <p align="center">
   <img src="assets/images/logo_unnes.png" width="100" alt="Logo UNNES" />
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <b>Aplikasi Pencatatan Keuangan Harian BUMDes & UMKM Desa Manggihan</b><br/>
+  <b>Aplikasi Pencatatan Keuangan Harian UMKM Desa Manggihan</b><br/>
   Program Pengabdian KKN GIAT 16 Universitas Negeri Semarang (UNNES)
 </p>
 
@@ -22,7 +22,7 @@
 
 ## 📌 Mengenai CatatKas
 
-**CatatKas** (KasKu) adalah aplikasi *mobile* berbasis **Flutter** yang dirancang khusus untuk mempermudah pelaku UMKM, pengelola BUMDes, dan warga Desa Manggihan dalam mencatat arus kas (pemasukan dan pengeluaran) secara praktis, cepat, dan 100% *offline* (tanpa tergantung koneksi internet).
+**CatatKas** (KasKu) adalah aplikasi *mobile* berbasis **Flutter** yang dirancang khusus untuk mempermudah pelaku UMKM dan warga Desa Manggihan dalam mencatat arus kas (pemasukan dan pengeluaran) secara praktis, cepat, dan 100% *offline* (tanpa tergantung koneksi internet).
 
 ---
 
@@ -121,7 +121,7 @@ CatatKas/
 |---|---|---|
 | `flutter_screenutil` | `^5.9.3` | Skala UI responsif berbagai resolusi layar |
 | `sqflite` | `^2.3.3` | Database lokal offline SQLite (`catatkas.db`) |
-| `pdf` & `printing` | `^3.11.1` | Pembuatan dokumen laporan berformat PDF |
+| `pdf` | `^3.11.1` | Pembuatan dokumen laporan berformat PDF |
 | `open_filex` | `^4.5.0` | Membuka file PDF langsung di viewer Android |
 | `share_plus` | `^10.0.0` | Membagikan dokumen PDF & backup data |
 | `google_fonts` | `^6.2.1` | Tipografi modern (Font Outfit) |
@@ -138,5 +138,5 @@ Aplikasi ini dikembangkan sebagai bagian dari program kerja pengabdian masyaraka
 ---
 
 <p align="center">
-  <i>Dibuat dengan ❤️ untuk kemajuan UMKM & BUMDes Desa Manggihan.</i>
+  <i>Dibuat dengan ❤️ untuk kemajuan UMKM Desa Manggihan.</i>
 </p>
