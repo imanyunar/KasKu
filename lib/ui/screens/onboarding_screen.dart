@@ -17,7 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _onboardingData = [
     {
-      "title": "Selamat Datang di CatatKas!",
+      "title": "Selamat Datang di CatatKas UMKM!",
       "description": "Aplikasi pencatatan modern khusus warung desa. Pencatatan keuangan kini semudah mengirim pesan.",
       "icon": "👋",
     },

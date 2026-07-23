@@ -130,15 +130,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
       if (!mounted) return;
       Navigator.pop(context);
 
-      await OpenFilex.open(result.internalPath);
-
-      if (!mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
+          dismissDirection: DismissDirection.horizontal,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: AppTheme.green,
-          duration: const Duration(milliseconds: 2500),
+          duration: const Duration(seconds: 3),
           content: Text('PDF Berhasil Dibuat & Tersimpan di Download',
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(
@@ -146,20 +145,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
             textColor: Colors.white,
             onPressed: () {
               try {
-                Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas - $_selectedFilter');
+                Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas UMKM - $_selectedFilter');
               } catch (_) {}
             },
           ),
         ),
       );
+
+      OpenFilex.open(result.internalPath);
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Gagal mencetak: ${e.toString()}', style: TextStyle(fontSize: 14.sp)),
           backgroundColor: AppTheme.red,
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
         ),
       );
     }

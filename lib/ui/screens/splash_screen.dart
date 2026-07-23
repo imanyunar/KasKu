@@ -95,50 +95,35 @@ class _SplashScreenState extends State<SplashScreen> {
                 children: [
                   const Spacer(),
 
-                  // Glassmorphic Badge Containers for Logos
+                  // Glassmorphic Container for UNNES Logo
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                    padding: EdgeInsets.all(20.r),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(28.r),
-                      border: Border.all(color: Colors.white.withOpacity(0.25), width: 1.5),
+                      color: Colors.white.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 20, offset: const Offset(0, 10)),
+                        BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 24, offset: const Offset(0, 10)),
                       ],
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/images/logo_unnes.png',
-                          width: 72.r,
-                          height: 72.r,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Icon(Icons.school, size: 54.sp, color: AppTheme.gold),
-                        ),
-                        SizedBox(width: 20.w),
-                        Container(width: 1.w, height: 50.h, color: Colors.white24),
-                        SizedBox(width: 20.w),
-                        Image.asset(
-                          'assets/images/logo_semarang.png',
-                          width: 72.r,
-                          height: 72.r,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Icon(Icons.account_balance, size: 54.sp, color: AppTheme.gold),
-                        ),
-                      ],
+                    child: Image.asset(
+                      'assets/images/app_logo.png',
+                      width: 96.r,
+                      height: 96.r,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Icon(Icons.account_balance_wallet, size: 64.sp, color: AppTheme.gold),
                     ),
                   ),
 
-                  SizedBox(height: 36.h),
+                  SizedBox(height: 32.h),
 
                   Text(
-                    'CATATKAS',
+                    'CATATKAS UMKM',
                     style: TextStyle(
-                      fontSize: 42.sp,
+                      fontSize: 34.sp,
                       fontWeight: FontWeight.w900,
                       color: AppTheme.gold,
-                      letterSpacing: 3.0,
+                      letterSpacing: 2.0,
                       shadows: [
                         Shadow(color: Colors.black38, blurRadius: 12, offset: const Offset(0, 4)),
                       ],

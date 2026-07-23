@@ -9,7 +9,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tentang CatatKas'),
+        title: Text('Tentang CatatKas UMKM'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 32),
           onPressed: () => Navigator.pop(context),
@@ -21,11 +21,11 @@ class AboutScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 32.h),
-            Icon(Icons.menu_book, size: 100, color: AppTheme.maroon),
+            Image.asset('assets/images/app_logo.png', width: 96.r, height: 96.r, fit: BoxFit.contain),
             SizedBox(height: 16.h),
             Text(
-              'CatatKas',
-              style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.bold),
+              'CatatKas UMKM',
+              style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
             ),
             Text(
               'Versi 1.0.0',

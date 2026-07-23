@@ -94,15 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       Navigator.pop(context);
 
-      await OpenFilex.open(result.internalPath);
-
-      if (!mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
+          dismissDirection: DismissDirection.horizontal,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: AppTheme.green,
-          duration: const Duration(milliseconds: 2500),
+          duration: const Duration(seconds: 3),
           content: Text('PDF Laporan Bulan Ini Berhasil Dibuat',
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(
@@ -110,20 +109,24 @@ class _HomeScreenState extends State<HomeScreen> {
             textColor: Colors.white,
             onPressed: () {
               try {
-                Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas Bulan Ini');
+                Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas UMKM Bulan Ini');
               } catch (_) {}
             },
           ),
         ),
       );
+
+      OpenFilex.open(result.internalPath);
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Tidak ada transaksi untuk dicetak PDF.', style: TextStyle(fontSize: 14.sp)),
           backgroundColor: AppTheme.red,
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 3),
         ),
       );
     }
@@ -190,18 +193,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             width: 44.r,
                             height: 44.r,
+                            padding: EdgeInsets.all(6.r),
                             decoration: BoxDecoration(
-                              gradient: AppTheme.primaryGradient,
+                              color: Colors.white,
                               shape: BoxShape.circle,
                               boxShadow: [
-                                BoxShadow(color: AppTheme.maroon.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 3)),
+                                BoxShadow(color: AppTheme.maroon.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 3)),
                               ],
                             ),
-                            child: Center(
-                              child: Text(
-                                'KM',
-                                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.white),
-                              ),
+                            child: Image.asset(
+                              'assets/images/app_logo.png',
+                              fit: BoxFit.contain,
                             ),
                           ),
                           SizedBox(width: 12.w),
