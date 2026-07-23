@@ -110,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          'assets/images/Logo Unnes.png',
+                          'assets/images/logo_unnes.png',
                           width: 72.r,
                           height: 72.r,
                           fit: BoxFit.contain,
@@ -120,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         Container(width: 1.w, height: 50.h, color: Colors.white24),
                         SizedBox(width: 20.w),
                         Image.asset(
-                          'assets/images/Logo Semarang.png',
+                          'assets/images/logo_semarang.png',
                           width: 72.r,
                           height: 72.r,
                           fit: BoxFit.contain,
