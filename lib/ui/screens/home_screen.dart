@@ -10,6 +10,7 @@ import 'package:catatkas/core/utils/currency_formatter.dart';
 import 'package:catatkas/core/utils/pdf_helper.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:catatkas/core/utils/update_checker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,6 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
       _totalPengeluaranBulanIni = summary['pengeluaran'] ?? 0;
       _labaBersihBulanIni = summary['untung'] ?? 0;
       _isLoading = false;
+    });
+
+    // Cek update otomatis di background (jika HP online)
+    Future.microtask(() {
+      if (mounted) UpdateChecker.checkUpdate(context);
     });
   }
 

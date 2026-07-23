@@ -23,6 +23,8 @@ dependencies:
   shared_preferences: ^2.3.2
   google_fonts: ^6.2.1
   open_filex: ^4.5.0
+  http: ^1.2.1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
