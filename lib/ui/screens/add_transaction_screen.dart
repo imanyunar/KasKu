@@ -207,85 +207,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 1. Selector Jenis Transaksi (Pemasukan vs Pengeluaran)
-                    Container(
-                      padding: EdgeInsets.all(4.r),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18.r),
-                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
-                        boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => setState(() => _isJual = true),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                padding: EdgeInsets.symmetric(vertical: 12.h),
-                                decoration: BoxDecoration(
-                                  color: _isJual ? AppTheme.green : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  boxShadow: _isJual ? [
-                                    BoxShadow(color: AppTheme.green.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
-                                  ] : [],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.arrow_upward_rounded, color: _isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
-                                    SizedBox(width: 6.w),
-                                    Text('PEMASUKAN', style: TextStyle(
-                                      fontSize: 14.sp, 
-                                      fontWeight: FontWeight.bold, 
-                                      color: _isJual ? Colors.white : AppTheme.textMuted
-                                    )),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => setState(() => _isJual = false),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                padding: EdgeInsets.symmetric(vertical: 12.h),
-                                decoration: BoxDecoration(
-                                  color: !_isJual ? AppTheme.red : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(14.r),
-                                  boxShadow: !_isJual ? [
-                                    BoxShadow(color: AppTheme.red.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
-                                  ] : [],
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.arrow_downward_rounded, color: !_isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
-                                    SizedBox(width: 6.w),
-                                    Text('PENGELUARAN', style: TextStyle(
-                                      fontSize: 14.sp, 
-                                      fontWeight: FontWeight.bold, 
-                                      color: !_isJual ? Colors.white : AppTheme.textMuted
-                                    )),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 20.h),
-
                     // TAMPILAN BERDASARKAN MODE (Ketik Cepat vs Isi Manual)
                     if (_isQuickInputMode) _buildQuickInputMode() else _buildManualMode(),
 
-                    SizedBox(height: 28.h),
+                    SizedBox(height: 24.h),
 
                     // Tombol Simpan (Ringkas & Teks Putih Konsisten)
                     PrimaryButton(
@@ -310,22 +235,29 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       children: [
         Container(
           width: double.infinity,
-          padding: EdgeInsets.all(12.r),
+          padding: EdgeInsets.all(14.r),
           decoration: BoxDecoration(
             color: AppTheme.maroon.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(14.r),
-            border: Border.all(color: AppTheme.maroon.withOpacity(0.1)),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: AppTheme.maroon.withOpacity(0.12)),
           ),
-          child: Row(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.lightbulb_outline_rounded, color: AppTheme.maroon, size: 18.sp),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: Text(
-                  'Ketik bebas, otomatis terdeteksi:\n• "pembelian 3 gram telur 200rb"\n• "penjualan bawang goreng 100 ons 250rb"',
-                  style: TextStyle(fontSize: 12.sp, color: AppTheme.textDark, height: 1.4, fontWeight: FontWeight.w500),
-                ),
+              Row(
+                children: [
+                  Icon(Icons.bolt_rounded, color: AppTheme.maroon, size: 18.sp),
+                  SizedBox(width: 6.w),
+                  Text(
+                    'Ketik Langsung Bebas',
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: AppTheme.maroon),
+                  ),
+                ],
+              ),
+              SizedBox(height: 6.h),
+              Text(
+                'Otomatis terdeteksi jenis & nominalnya:\n• "pembelian 3 gram telur 200rb"\n• "penjualan bawang goreng 100 ons 250rb"\n• "jual beras 1kg 15rb"',
+                style: TextStyle(fontSize: 12.sp, color: AppTheme.textDark, height: 1.4, fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -350,7 +282,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                margin: EdgeInsets.only(top: 14.h),
+                margin: EdgeInsets.only(top: 16.h),
                 padding: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
                   color: statusBg,
@@ -370,7 +302,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Tercatat: ${isExpense ? "PENGELUARAN" : "PEMASUKAN"}',
+                            'Tercatat Otomatis: ${isExpense ? "PENGELUARAN (-)" : "PEMASUKAN (+)"}',
                             style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 13.sp),
                           ),
                           SizedBox(height: 2.h),
@@ -394,113 +326,192 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   Widget _buildManualMode() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.grey.withOpacity(0.1)),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
-        ],
-      ),
-      padding: EdgeInsets.all(18.r),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Autocomplete<ProductItem>(
-            initialValue: TextEditingValue(text: _nameController.text),
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<ProductItem>.empty();
-              }
-              return _availableProducts.where((ProductItem option) {
-                return option.name
-                    .toLowerCase()
-                    .contains(textEditingValue.text.toLowerCase());
-              });
-            },
-            displayStringForOption: (ProductItem option) => option.name,
-            onSelected: (ProductItem selection) {
-              _nameController.text = selection.name;
-              _priceController.text = selection.defaultPrice.toInt().toString();
-              _unitController.text = selection.defaultUnit;
-              _qtyController.text = '1';
-            },
-            fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
-              return TextField(
-                controller: controller,
-                focusNode: focusNode,
-                onEditingComplete: onEditingComplete,
-                onChanged: (val) {
-                  _nameController.text = val;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Selector Jenis Transaksi (Hanya tampil di Isi Manual)
+        Container(
+          padding: EdgeInsets.all(4.r),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _isJual = true),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    decoration: BoxDecoration(
+                      color: _isJual ? AppTheme.green : Colors.transparent,
+                      borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: _isJual ? [
+                        BoxShadow(color: AppTheme.green.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
+                      ] : [],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_upward_rounded, color: _isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
+                        SizedBox(width: 6.w),
+                        Text('PEMASUKAN', style: TextStyle(
+                          fontSize: 14.sp, 
+                          fontWeight: FontWeight.bold, 
+                          color: _isJual ? Colors.white : AppTheme.textMuted
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => _isJual = false),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    decoration: BoxDecoration(
+                      color: !_isJual ? AppTheme.red : Colors.transparent,
+                      borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: !_isJual ? [
+                        BoxShadow(color: AppTheme.red.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
+                      ] : [],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_downward_rounded, color: !_isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
+                        SizedBox(width: 6.w),
+                        Text('PENGELUARAN', style: TextStyle(
+                          fontSize: 14.sp, 
+                          fontWeight: FontWeight.bold, 
+                          color: !_isJual ? Colors.white : AppTheme.textMuted
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 16.h),
+
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+            ],
+          ),
+          padding: EdgeInsets.all(18.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Autocomplete<ProductItem>(
+                initialValue: TextEditingValue(text: _nameController.text),
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.isEmpty) {
+                    return const Iterable<ProductItem>.empty();
+                  }
+                  return _availableProducts.where((ProductItem option) {
+                    return option.name
+                        .toLowerCase()
+                        .contains(textEditingValue.text.toLowerCase());
+                  });
                 },
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppTheme.background,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                    borderSide: const BorderSide(color: AppTheme.maroon, width: 2),
-                  ),
-                  labelText: 'Nama Barang',
-                  labelStyle: TextStyle(fontSize: 14.sp, color: AppTheme.textMuted),
-                  prefixIcon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
-                ),
-              );
-            },
-          ),
-          SizedBox(height: 14.h),
+                displayStringForOption: (ProductItem option) => option.name,
+                onSelected: (ProductItem selection) {
+                  _nameController.text = selection.name;
+                  _priceController.text = selection.defaultPrice.toInt().toString();
+                  _unitController.text = selection.defaultUnit;
+                  _qtyController.text = '1';
+                },
+                fieldViewBuilder: (context, controller, focusNode, onEditingComplete) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    onEditingComplete: onEditingComplete,
+                    onChanged: (val) {
+                      _nameController.text = val;
+                    },
+                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppTheme.background,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        borderSide: const BorderSide(color: AppTheme.maroon, width: 2),
+                      ),
+                      labelText: 'Nama Barang',
+                      labelStyle: TextStyle(fontSize: 14.sp, color: AppTheme.textMuted),
+                      prefixIcon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 14.h),
 
-          CustomTextField(
-            controller: _priceController,
-            labelText: 'Total Harga (Rp)',
-            keyboardType: TextInputType.number,
-          ),
+              CustomTextField(
+                controller: _priceController,
+                labelText: 'Total Harga (Rp)',
+                keyboardType: TextInputType.number,
+              ),
 
-          if (!_showAdvancedFields) ...[
-            SizedBox(height: 10.h),
-            TextButton.icon(
-              onPressed: () {
-                setState(() => _showAdvancedFields = true);
-              },
-              icon: Icon(Icons.add_circle_outline, color: AppTheme.maroon, size: 18.sp),
-              label: Text('Atur Jumlah & Satuan', style: TextStyle(color: AppTheme.maroon, fontSize: 14.sp, fontWeight: FontWeight.bold)),
-            ),
-          ],
-
-          if (_showAdvancedFields) ...[
-            SizedBox(height: 14.h),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: CustomTextField(
-                    controller: _qtyController,
-                    labelText: 'Jumlah',
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  flex: 3,
-                  child: CustomTextField(
-                    controller: _unitController,
-                    labelText: 'Satuan (kg/pcs)',
-                  ),
+              if (!_showAdvancedFields) ...[
+                SizedBox(height: 10.h),
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() => _showAdvancedFields = true);
+                  },
+                  icon: Icon(Icons.add_circle_outline, color: AppTheme.maroon, size: 18.sp),
+                  label: Text('Atur Jumlah & Satuan', style: TextStyle(color: AppTheme.maroon, fontSize: 14.sp, fontWeight: FontWeight.bold)),
                 ),
               ],
-            ),
-          ],
-        ],
-      ),
+
+              if (_showAdvancedFields) ...[
+                SizedBox(height: 14.h),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: CustomTextField(
+                        controller: _qtyController,
+                        labelText: 'Jumlah',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      flex: 3,
+                      child: CustomTextField(
+                        controller: _unitController,
+                        labelText: 'Satuan (kg/pcs)',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 
