@@ -1,4 +1,4 @@
-package com.example.catatkas
+package com.imanyunar.catatkas
 
 import io.flutter.embedding.android.FlutterActivity
 

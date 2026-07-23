@@ -46,3 +46,9 @@ app.*.map.json
 
 # Executable APK files
 *.apk
+
+# Android Keystore and signing properties
+*.jks
+*.keystore
+key.properties
+
