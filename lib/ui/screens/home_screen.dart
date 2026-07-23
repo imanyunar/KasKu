@@ -38,11 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final startOfMonth = DateTime(now.year, now.month, 1);
     final endOfMonth = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
-    final saldoHari = await DatabaseHelper.instance.getDailySaldo();
+    final saldoTotal = await DatabaseHelper.instance.getTotalSaldo();
     final summary = await DatabaseHelper.instance.getReportSummary(startOfMonth, endOfMonth);
 
     setState(() {
-      _saldoHariIni = saldoHari;
+      _saldoHariIni = saldoTotal;
       _totalPemasukanBulanIni = summary['pemasukan'] ?? 0;
       _totalPengeluaranBulanIni = summary['pengeluaran'] ?? 0;
       _labaBersihBulanIni = summary['untung'] ?? 0;
@@ -267,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Icon(Icons.account_balance_wallet_rounded, color: AppTheme.gold, size: 14.sp),
                                   SizedBox(width: 6.w),
                                   Text(
-                                    'Saldo Kas Hari Ini',
+                                    'Total Saldo Kas Saat Ini',
                                     style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.white),
                                   ),
                                 ],

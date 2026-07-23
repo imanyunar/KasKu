@@ -1,65 +1,113 @@
 import 'package:catatkas/core/models/transaction_item.dart';
 
 class TransactionParser {
-  /// Mencoba parsing string input cepat (Quick Input).
-  /// Contoh: "jual bawang merah 1kg 20rb"
-  /// Kembalian: [TransactionItem] jika sukses, melempar exception jika gagal.
+  static const List<String> _pemasukanKeywords = [
+    'penjualan', 'jual', 'pemasukan', 'terima', 'pendapatan', 'omset', 'laku', 'dapat', 'laba', 'setoran'
+  ];
+
+  static const List<String> _pengeluaranKeywords = [
+    'pembelian', 'beli', 'bayar', 'kulakan', 'belanja', 'biaya', 'pengeluaran', 'ongkir', 'gaji', 'sewa', 'listrik', 'air', 'dinas', 'servis', 'reparasi'
+  ];
+
+  /// Detect whether the typed text represents Pemasukan or Pengeluaran
+  static bool? detectIsJual(String input) {
+    input = input.trim().toLowerCase();
+    for (var kw in _pemasukanKeywords) {
+      if (input.startsWith('$kw ') || input == kw) return true;
+    }
+    for (var kw in _pengeluaranKeywords) {
+      if (input.startsWith('$kw ') || input == kw) return false;
+    }
+    return null;
+  }
+
+  /// Parsing string input cepat (Quick Input).
+  /// Contoh 1: "jual bawang merah 1kg 20rb"
+  /// Contoh 2: "pembelian 3 gram telur 200rb"
+  /// Contoh 3: "penjualan bawang goreng 100 ons 250rb"
   static TransactionItem parse(String input, {bool defaultIsJual = true}) {
     input = input.trim();
     if (input.isEmpty) {
       throw const FormatException("Ketikkan data transaksi terlebih dahulu.");
     }
 
-    // Pola Regex:
-    // 1. (jual|beli)? -> Opsional awalan (case-insensitive)
-    // 2. (.*?) -> Nama barang (non-greedy)
-    // 3. ([\d.,]+) -> Kuantitas (angka, koma, titik)
-    // 4. ([a-zA-Z]+)? -> Satuan opsional (kg, pcs, liter, dll)
-    // 5. ([\d.,]+) -> Harga (angka, koma, titik)
-    // 6. (rb|ribu|jt|juta)? -> Singkatan nominal opsional
-    final RegExp regex = RegExp(
-      r'^(?:(jual|beli)\s+)?(.*?)\s+([\d.,]+)\s*([a-zA-Z]+)?\s+([\d.,]+)\s*(rb|ribu|jt|juta)?$',
+    String lowerInput = input.toLowerCase();
+    bool isJual = defaultIsJual;
+    String cleanInput = input;
+
+    // 1. Cek kata kunci aksi (penjualan/pembelian/jual/beli/dll)
+    for (var kw in _pemasukanKeywords) {
+      if (lowerInput.startsWith('$kw ')) {
+        isJual = true;
+        cleanInput = input.substring(kw.length).trim();
+        break;
+      }
+    }
+    for (var kw in _pengeluaranKeywords) {
+      if (lowerInput.startsWith('$kw ')) {
+        isJual = false;
+        cleanInput = input.substring(kw.length).trim();
+        break;
+      }
+    }
+
+    // 2. Pola Regex A: [Nama] [Qty] [Unit] [Price] (Contoh: "bawang goreng 100 ons 250rb" / "bawang merah 1kg 20rb")
+    final RegExp regexA = RegExp(
+      r'^(.*?)\s+([\d.,]+)\s*([a-zA-Z]+)?\s+([\d.,]+)\s*(rb|ribu|jt|juta)?$',
       caseSensitive: false,
     );
 
-    final match = regex.firstMatch(input);
+    // 3. Pola Regex B: [Qty] [Unit] [Nama] [Price] (Contoh: "3 gram telur 200rb" / "100 ons bawang 250rb")
+    final RegExp regexB = RegExp(
+      r'^([\d.,]+)\s*([a-zA-Z]+)?\s+(.*?)\s+([\d.,]+)\s*(rb|ribu|jt|juta)?$',
+      caseSensitive: false,
+    );
+
+    Match? match = regexA.firstMatch(cleanInput);
+    bool isTypeB = false;
+
+    if (match == null || (match.group(1)?.trim().isEmpty ?? true)) {
+      match = regexB.firstMatch(cleanInput);
+      isTypeB = true;
+    }
+
     if (match == null) {
       throw const FormatException(
-          "Format tidak dikenali. \nContoh yang benar: 'bawang merah 1kg 20rb'");
+          "Format tidak dikenali.\nContoh: 'pembelian 3 gram telur 200rb' atau 'penjualan bawang 1kg 20rb'");
     }
 
-    // Ekstrak Tipe Transaksi (jika diketik, menimpa default dari toggle UI)
-    bool isJual = defaultIsJual;
-    final typeStr = match.group(1)?.toLowerCase();
-    if (typeStr == 'jual') {
-      isJual = true;
-    } else if (typeStr == 'beli') {
-      isJual = false;
+    String name = "";
+    String qtyStr = "1";
+    String unit = "pcs";
+    String priceStr = "0";
+    String? nominalStr;
+
+    if (!isTypeB) {
+      // Form A: [Name] [Qty] [Unit] [Price]
+      name = match.group(1)?.trim() ?? "";
+      qtyStr = match.group(2)?.replaceAll(',', '.') ?? "1";
+      unit = match.group(3)?.trim() ?? "pcs";
+      priceStr = match.group(4) ?? "0";
+      nominalStr = match.group(5)?.toLowerCase();
+    } else {
+      // Form B: [Qty] [Unit] [Name] [Price]
+      qtyStr = match.group(1)?.replaceAll(',', '.') ?? "1";
+      unit = match.group(2)?.trim() ?? "pcs";
+      name = match.group(3)?.trim() ?? "";
+      priceStr = match.group(4) ?? "0";
+      nominalStr = match.group(5)?.toLowerCase();
     }
 
-    // Ekstrak Nama Barang
-    final name = match.group(2)?.trim() ?? "";
     if (name.isEmpty) {
       throw const FormatException("Nama barang tidak boleh kosong.");
     }
 
-    // Ekstrak Kuantitas
-    final qtyStr = match.group(3)?.replaceAll(',', '.') ?? "1";
     final qty = double.tryParse(qtyStr) ?? 1.0;
 
-    // Ekstrak Satuan
-    final unit = match.group(4)?.trim() ?? "pcs";
-
-    // Ekstrak Harga (Indonesian locale: 30.000 -> 30000, 30,5 -> 30.5)
-    String priceStr = match.group(5) ?? "0";
-    // 1. Hapus semua titik (sebagai pemisah ribuan)
-    priceStr = priceStr.replaceAll('.', '');
-    // 2. Ganti koma dengan titik (sebagai pemisah desimal)
-    priceStr = priceStr.replaceAll(',', '.');
+    // Parsing Harga (Indonesian locale: 30.000 -> 30000, 30,5 -> 30.5)
+    priceStr = priceStr.replaceAll('.', '').replaceAll(',', '.');
     double price = double.tryParse(priceStr) ?? 0.0;
 
-    // Ekstrak Nominal / Pengali Uang
-    final nominalStr = match.group(6)?.toLowerCase();
     if (nominalStr == 'rb' || nominalStr == 'ribu') {
       price *= 1000;
     } else if (nominalStr == 'jt' || nominalStr == 'juta') {
@@ -74,7 +122,7 @@ class TransactionParser {
       isJual: isJual,
       name: name,
       qty: qty,
-      unit: unit,
+      unit: unit.isEmpty ? "pcs" : unit,
       price: price,
       timestamp: DateTime.now(),
     );

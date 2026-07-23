@@ -24,8 +24,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   final TextEditingController _qtyController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  
-  bool _isJual = true; 
+
+  bool _isJual = true;
   bool _isQuickInputMode = true;
   bool _showAdvancedFields = false;
   List<ProductItem> _availableProducts = [];
@@ -34,21 +34,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   void initState() {
     super.initState();
     _loadProducts();
-    
+
     if (widget.existingItem != null) {
       _isJual = widget.existingItem!.isJual;
-      _isQuickInputMode = false; 
+      _isQuickInputMode = false;
       _nameController.text = widget.existingItem!.name;
       _qtyController.text = widget.existingItem!.qty.toString();
       _unitController.text = widget.existingItem!.unit;
       _priceController.text = widget.existingItem!.price.toInt().toString();
-      
+
       if (widget.existingItem!.qty != 1.0 || (widget.existingItem!.unit != 'pcs' && widget.existingItem!.unit != '')) {
         _showAdvancedFields = true;
       }
     } else {
       _qtyController.text = '1';
       _unitController.text = 'pcs';
+    }
+
+    _quickInputController.addListener(_onQuickInputChanged);
+  }
+
+  void _onQuickInputChanged() {
+    if (!_isQuickInputMode) return;
+    final detected = TransactionParser.detectIsJual(_quickInputController.text);
+    if (detected != null && detected != _isJual) {
+      setState(() {
+        _isJual = detected;
+      });
     }
   }
 
@@ -61,6 +73,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   @override
   void dispose() {
+    _quickInputController.removeListener(_onQuickInputChanged);
     _quickInputController.dispose();
     _nameController.dispose();
     _qtyController.dispose();
@@ -77,12 +90,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
-        title: Text('Batal Menyimpan?', style: TextStyle(fontSize: 20.sp)),
-        content: Text('Data yang Anda ketik akan hilang.', style: TextStyle(fontSize: 16.sp)),
+        title: Text('Batal Menyimpan?', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        content: Text('Data yang Anda ketik akan hilang.', style: TextStyle(fontSize: 15.sp)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('TIDAK', style: TextStyle(color: Colors.grey, fontSize: 16.sp)),
+            child: Text('TIDAK', style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -90,7 +103,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
             ),
             onPressed: () => Navigator.pop(context, true),
-            child: Text('YA, KELUAR', style: TextStyle(color: Colors.white, fontSize: 16.sp)),
+            child: Text('YA, KELUAR', style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -116,7 +129,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         appBar: AppBar(
           title: Text(isEditMode ? 'Edit Transaksi' : 'Catat Transaksi'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new, size: 24.sp),
+            icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp),
             onPressed: () async {
               final shouldPop = await _onWillPop();
               if (shouldPop && context.mounted) Navigator.pop(context);
@@ -125,16 +138,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         ),
         body: Column(
           children: [
-            // Tab Switcher Modern
+            // Tab Switcher Mode (Ketik Cepat vs Isi Manual)
             if (!isEditMode)
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 padding: EdgeInsets.all(4.r),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
+                  border: Border.all(color: Colors.grey.withOpacity(0.1)),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
                   ],
                 ),
                 child: Row(
@@ -143,8 +157,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       child: GestureDetector(
                         onTap: () => setState(() => _isQuickInputMode = true),
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          duration: const Duration(milliseconds: 150),
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
                           decoration: BoxDecoration(
                             color: _isQuickInputMode ? AppTheme.maroon : Colors.transparent,
                             borderRadius: BorderRadius.circular(12.r),
@@ -153,7 +167,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           child: Text(
                             'Ketik Cepat',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                               color: _isQuickInputMode ? Colors.white : AppTheme.textMuted,
                             ),
@@ -165,8 +179,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       child: GestureDetector(
                         onTap: () => setState(() => _isQuickInputMode = false),
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          duration: const Duration(milliseconds: 150),
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
                           decoration: BoxDecoration(
                             color: !_isQuickInputMode ? AppTheme.maroon : Colors.transparent,
                             borderRadius: BorderRadius.circular(12.r),
@@ -175,7 +189,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           child: Text(
                             'Isi Manual',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                               color: !_isQuickInputMode ? Colors.white : AppTheme.textMuted,
                             ),
@@ -189,19 +203,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 8.h),
-                    // 1. Pemilihan Jenis Transaksi (Jual / Beli)
+                    // 1. Selector Jenis Transaksi (Pemasukan vs Pengeluaran)
                     Container(
                       padding: EdgeInsets.all(4.r),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.r),
+                        borderRadius: BorderRadius.circular(18.r),
+                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+                          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
                         ],
                       ),
                       child: Row(
@@ -210,22 +224,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             child: GestureDetector(
                               onTap: () => setState(() => _isJual = true),
                               child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 250),
-                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                duration: const Duration(milliseconds: 200),
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
                                   color: _isJual ? AppTheme.green : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(16.r),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   boxShadow: _isJual ? [
-                                    BoxShadow(color: AppTheme.green.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))
+                                    BoxShadow(color: AppTheme.green.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
                                   ] : [],
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.arrow_upward_rounded, color: _isJual ? Colors.white : AppTheme.textMuted, size: 20.sp),
-                                    SizedBox(width: 8.w),
+                                    Icon(Icons.arrow_upward_rounded, color: _isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
+                                    SizedBox(width: 6.w),
                                     Text('PEMASUKAN', style: TextStyle(
-                                      fontSize: 16.sp, 
+                                      fontSize: 14.sp, 
                                       fontWeight: FontWeight.bold, 
                                       color: _isJual ? Colors.white : AppTheme.textMuted
                                     )),
@@ -238,22 +252,22 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             child: GestureDetector(
                               onTap: () => setState(() => _isJual = false),
                               child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 250),
-                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                duration: const Duration(milliseconds: 200),
+                                padding: EdgeInsets.symmetric(vertical: 12.h),
                                 decoration: BoxDecoration(
                                   color: !_isJual ? AppTheme.red : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(16.r),
+                                  borderRadius: BorderRadius.circular(14.r),
                                   boxShadow: !_isJual ? [
-                                    BoxShadow(color: AppTheme.red.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))
+                                    BoxShadow(color: AppTheme.red.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
                                   ] : [],
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.arrow_downward_rounded, color: !_isJual ? Colors.white : AppTheme.textMuted, size: 20.sp),
-                                    SizedBox(width: 8.w),
+                                    Icon(Icons.arrow_downward_rounded, color: !_isJual ? Colors.white : AppTheme.textMuted, size: 18.sp),
+                                    SizedBox(width: 6.w),
                                     Text('PENGELUARAN', style: TextStyle(
-                                      fontSize: 16.sp, 
+                                      fontSize: 14.sp, 
                                       fontWeight: FontWeight.bold, 
                                       color: !_isJual ? Colors.white : AppTheme.textMuted
                                     )),
@@ -265,20 +279,21 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         ],
                       ),
                     ),
-                    
-                    SizedBox(height: 32.h),
 
-                    // TAMPILAN BERDASARKAN MODE
+                    SizedBox(height: 20.h),
+
+                    // TAMPILAN BERDASARKAN MODE (Ketik Cepat vs Isi Manual)
                     if (_isQuickInputMode) _buildQuickInputMode() else _buildManualMode(),
-                    
-                    SizedBox(height: 40.h),
-                    
-                    // Tombol Simpan
+
+                    SizedBox(height: 28.h),
+
+                    // Tombol Simpan (Ringkas & Teks Putih Konsisten)
                     PrimaryButton(
-                      label: isEditMode ? 'UPDATE TRANSAKSI' : 'SIMPAN',
+                      label: isEditMode ? 'UPDATE TRANSAKSI' : 'SIMPAN TRANSAKSI',
+                      icon: Icons.check_circle_rounded,
                       onPressed: _handleSimpan,
                     ),
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 24.h),
                   ],
                 ),
               ),
@@ -291,11 +306,29 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
   Widget _buildQuickInputMode() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Contoh: "bawang merah 1kg 20rb"',
-          style: TextStyle(fontSize: 16.sp, color: AppTheme.textMuted, fontStyle: FontStyle.italic),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(12.r),
+          decoration: BoxDecoration(
+            color: AppTheme.maroon.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(14.r),
+            border: Border.all(color: AppTheme.maroon.withOpacity(0.1)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.lightbulb_outline_rounded, color: AppTheme.maroon, size: 18.sp),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  'Ketik bebas, otomatis terdeteksi:\n• "pembelian 3 gram telur 200rb"\n• "penjualan bawang goreng 100 ons 250rb"',
+                  style: TextStyle(fontSize: 12.sp, color: AppTheme.textDark, height: 1.4, fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 16.h),
         CustomTextField(
@@ -303,38 +336,56 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           hintText: 'Ketik pesan transaksi di sini...',
           maxLines: 3,
         ),
-        
-        // Live Preview
+
+        // Live Preview Deteksi Transaksi
         ValueListenableBuilder<TextEditingValue>(
           valueListenable: _quickInputController,
           builder: (context, value, child) {
-            if (value.text.trim().isEmpty) return SizedBox.shrink();
+            if (value.text.trim().isEmpty) return const SizedBox.shrink();
             try {
               final item = TransactionParser.parse(value.text, defaultIsJual: _isJual);
+              final isExpense = !item.isJual;
+              final statusBg = isExpense ? AppTheme.redSoft : AppTheme.greenSoft;
+              final statusColor = isExpense ? AppTheme.red : AppTheme.green;
+
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: EdgeInsets.only(top: 16.h),
-                padding: EdgeInsets.all(16.r),
+                duration: const Duration(milliseconds: 200),
+                margin: EdgeInsets.only(top: 14.h),
+                padding: EdgeInsets.all(14.r),
                 decoration: BoxDecoration(
-                  color: AppTheme.green.withOpacity(0.1),
+                  color: statusBg,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: AppTheme.green.withOpacity(0.3)),
+                  border: Border.all(color: statusColor.withOpacity(0.3)),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle, color: AppTheme.green, size: 32.sp),
-                    SizedBox(width: 12.w),
+                    Icon(
+                      isExpense ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                      color: statusColor,
+                      size: 24.sp,
+                    ),
+                    SizedBox(width: 10.w),
                     Expanded(
-                      child: Text(
-                        'Tercatat: ${item.name}, ${item.qty} ${item.unit} \nTotal: ${CurrencyFormatter.format(item.price)}',
-                        style: TextStyle(color: AppTheme.green, fontWeight: FontWeight.w600, height: 1.4, fontSize: 16.sp),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Tercatat: ${isExpense ? "PENGELUARAN" : "PEMASUKAN"}',
+                            style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 13.sp),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            '${item.name} (${item.qty} ${item.unit}) • ${CurrencyFormatter.format(item.price)}',
+                            style: TextStyle(color: AppTheme.textDark, fontWeight: FontWeight.w600, fontSize: 13.sp),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               );
-            } catch (e) {
-              return SizedBox.shrink(); 
+            } catch (_) {
+              return const SizedBox.shrink();
             }
           },
         ),
@@ -346,12 +397,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24.r),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
         ],
       ),
-      padding: EdgeInsets.all(20.r),
+      padding: EdgeInsets.all(18.r),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -382,50 +434,50 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 onChanged: (val) {
                   _nameController.text = val;
                 },
-                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppTheme.background,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(14.r),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.r),
-                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.2), width: 1.5),
+                    borderRadius: BorderRadius.circular(14.r),
+                    borderSide: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.r),
+                    borderRadius: BorderRadius.circular(14.r),
                     borderSide: const BorderSide(color: AppTheme.maroon, width: 2),
                   ),
                   labelText: 'Nama Barang',
-                  labelStyle: TextStyle(fontSize: 16.sp, color: AppTheme.textMuted),
-                  prefixIcon: Icon(Icons.shopping_bag_outlined, size: 24.sp),
+                  labelStyle: TextStyle(fontSize: 14.sp, color: AppTheme.textMuted),
+                  prefixIcon: Icon(Icons.shopping_bag_outlined, size: 20.sp),
                 ),
               );
             },
           ),
-          SizedBox(height: 16.h),
-          
+          SizedBox(height: 14.h),
+
           CustomTextField(
             controller: _priceController,
             labelText: 'Total Harga (Rp)',
             keyboardType: TextInputType.number,
           ),
-          
+
           if (!_showAdvancedFields) ...[
-            SizedBox(height: 16.h),
+            SizedBox(height: 10.h),
             TextButton.icon(
               onPressed: () {
                 setState(() => _showAdvancedFields = true);
               },
-              icon: Icon(Icons.add_circle_outline, color: AppTheme.maroon, size: 20.sp),
-              label: Text('Atur Jumlah & Satuan', style: TextStyle(color: AppTheme.maroon, fontSize: 16.sp, fontWeight: FontWeight.bold)),
+              icon: Icon(Icons.add_circle_outline, color: AppTheme.maroon, size: 18.sp),
+              label: Text('Atur Jumlah & Satuan', style: TextStyle(color: AppTheme.maroon, fontSize: 14.sp, fontWeight: FontWeight.bold)),
             ),
           ],
-          
+
           if (_showAdvancedFields) ...[
-            SizedBox(height: 16.h),
+            SizedBox(height: 14.h),
             Row(
               children: [
                 Expanded(
@@ -436,7 +488,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     keyboardType: TextInputType.number,
                   ),
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 12.w),
                 Expanded(
                   flex: 3,
                   child: CustomTextField(
@@ -458,7 +510,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
       if (_isQuickInputMode) {
         if (_quickInputController.text.trim().isEmpty) {
-           throw const FormatException("Pesan tidak boleh kosong.");
+          throw const FormatException("Pesan tidak boleh kosong.");
         }
         item = TransactionParser.parse(
           _quickInputController.text,
@@ -475,7 +527,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
         final qty = double.tryParse(qtyStr.replaceAll(',', '.')) ?? 1.0;
         final unit = unitStr.trim().isEmpty ? "pcs" : unitStr.trim();
-        
+
         String priceStr = _priceController.text;
         priceStr = priceStr.replaceAll('.', '');
         priceStr = priceStr.replaceAll(',', '.');
@@ -486,7 +538,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         }
 
         item = TransactionItem(
-          id: widget.existingItem?.id, 
+          id: widget.existingItem?.id,
           isJual: _isJual,
           name: name,
           qty: qty,
@@ -501,18 +553,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       } else {
         await DatabaseHelper.instance.insertTransaction(item);
       }
-      
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           content: Text('${item.name} berhasil disimpan!',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
           backgroundColor: AppTheme.green,
+          duration: const Duration(seconds: 2),
         ),
       );
-      Navigator.pop(context, true); 
+      Navigator.pop(context, true);
     } catch (e) {
       String errorMessage = "Terjadi kesalahan.";
       if (e is FormatException) {
@@ -523,7 +576,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         SnackBar(
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          content: Text(errorMessage, style: TextStyle(fontSize: 16.sp)),
+          content: Text(errorMessage, style: TextStyle(fontSize: 14.sp)),
           backgroundColor: AppTheme.red,
         ),
       );

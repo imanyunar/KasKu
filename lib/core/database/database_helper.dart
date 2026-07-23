@@ -98,6 +98,27 @@ CREATE TABLE products (
     return result.map((json) => TransactionItem.fromMap(json)).toList();
   }
 
+  // --- Fungsi Read (Total Saldo Akumulatif Kas Saat Ini) ---
+  Future<double> getTotalSaldo() async {
+    final db = await instance.database;
+    final result = await db.query('transactions');
+
+    double totalPemasukan = 0;
+    double totalPengeluaran = 0;
+
+    for (var row in result) {
+      final isJual = row['isJual'] == 1;
+      final price = row['price'] as double;
+      if (isJual) {
+        totalPemasukan += price;
+      } else {
+        totalPengeluaran += price;
+      }
+    }
+
+    return totalPemasukan - totalPengeluaran;
+  }
+
   // --- Fungsi Read (Laba/Rugi Harian) ---
   Future<double> getDailySaldo() async {
     final db = await instance.database;
