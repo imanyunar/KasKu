@@ -5,6 +5,7 @@ import 'package:catatkas/core/utils/backup_helper.dart';
 import 'package:catatkas/ui/screens/product_screen.dart';
 import 'package:catatkas/ui/screens/about_screen.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -39,6 +40,9 @@ class SettingsScreen extends StatelessWidget {
                   );
                   
                   final path = await BackupHelper.exportToCsv();
+                  
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
                   
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -10,7 +10,9 @@ import 'package:catatkas/core/utils/currency_formatter.dart';
 import 'package:catatkas/core/utils/pdf_helper.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:catatkas/core/utils/update_checker.dart';
+import 'package:catatkas/core/utils/backup_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadDashboardData();
+    Future.microtask(() => _checkBackupReminder());
   }
 
   Future<void> _loadDashboardData() async {
@@ -54,6 +57,62 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.microtask(() {
       if (mounted) UpdateChecker.checkUpdate(context);
     });
+  }
+
+  Future<void> _checkBackupReminder() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastBackup = prefs.getInt('lastBackupDate') ?? 0;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    // 7 hari = 7 * 24 * 60 * 60 * 1000 = 604800000 ms
+    // Jika lastBackup == 0 (belum pernah sama sekali) atau sudah lewat 7 hari
+    if (now - lastBackup > 604800000) {
+      if (!mounted) return;
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          title: Row(
+            children: [
+              Icon(Icons.security_rounded, color: AppTheme.maroon),
+              SizedBox(width: 8.w),
+              Expanded(child: Text('Pengingat Backup', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold))),
+            ],
+          ),
+          content: Text('Anda belum mem-backup data kas minggu ini.\n\nKlik "Backup & Bagikan" lalu kirimkan file CSV-nya ke WhatsApp Anda sendiri atau keluarga terdekat, agar data aman jika HP hilang/rusak.', style: TextStyle(fontSize: 14.sp)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Nanti Saja', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.green,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+              ),
+              onPressed: () async {
+                Navigator.pop(context);
+                try {
+                  final path = await BackupHelper.exportToCsv();
+                  await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
+                  Share.shareXFiles([XFile(path)], text: 'File Backup Data CatatKas UMKM');
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Gagal backup: $e', style: TextStyle(color: Colors.white)),
+                      backgroundColor: AppTheme.red,
+                    ));
+                  }
+                }
+              },
+              child: Text('Backup & Bagikan', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   String _formatCurrency(double amount) {
