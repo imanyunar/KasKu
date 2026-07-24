@@ -21,7 +21,14 @@ class AboutScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 32.h),
-            Image.asset('assets/images/app_logo.png', width: 96.r, height: 96.r, fit: BoxFit.contain),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/logo_semarang.png', width: 80.r, height: 80.r, fit: BoxFit.contain),
+                SizedBox(width: 24.w),
+                Image.asset('assets/images/logo_unnes.png', width: 80.r, height: 80.r, fit: BoxFit.contain),
+              ],
+            ),
             SizedBox(height: 16.h),
             Text(
               'CatatKas UMKM',
@@ -44,15 +51,6 @@ class AboutScreen extends StatelessWidget {
             Text(
               'Dikembangkan Oleh:',
               style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/logo_unnes.png', width: 64, height: 64),
-                SizedBox(width: 24.w),
-                Image.asset('assets/images/logo_semarang.png', width: 64, height: 64),
-              ],
             ),
             SizedBox(height: 16.h),
             Text(

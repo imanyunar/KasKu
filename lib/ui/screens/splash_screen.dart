@@ -95,23 +95,36 @@ class _SplashScreenState extends State<SplashScreen> {
                 children: [
                   const Spacer(),
 
-                  // Glassmorphic Container for UNNES Logo
+                  // Glassmorphic Container for Logos
                   Container(
-                    padding: EdgeInsets.all(20.r),
+                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(32.r),
                       border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
                       boxShadow: [
                         BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 24, offset: const Offset(0, 10)),
                       ],
                     ),
-                    child: Image.asset(
-                      'assets/images/app_logo.png',
-                      width: 96.r,
-                      height: 96.r,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(Icons.account_balance_wallet, size: 64.sp, color: AppTheme.gold),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/logo_semarang.png',
+                          width: 80.r,
+                          height: 80.r,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => Icon(Icons.location_city, size: 64.sp, color: AppTheme.gold),
+                        ),
+                        SizedBox(width: 24.w),
+                        Image.asset(
+                          'assets/images/logo_unnes.png',
+                          width: 80.r,
+                          height: 80.r,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => Icon(Icons.school, size: 64.sp, color: AppTheme.gold),
+                        ),
+                      ],
                     ),
                   ),
 
