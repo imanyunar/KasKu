@@ -70,46 +70,95 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          title: Row(
-            children: [
-              Icon(Icons.security_rounded, color: AppTheme.maroon),
-              SizedBox(width: 8.w),
-              Expanded(child: Text('Pengingat Backup', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold))),
-            ],
+        builder: (context) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
+          backgroundColor: Colors.white,
+          elevation: 8,
+          child: Container(
+            padding: EdgeInsets.all(24.r),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24.r),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.r),
+                  decoration: BoxDecoration(
+                    color: AppTheme.maroon.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.security_rounded, color: AppTheme.maroon, size: 42.sp),
+                ),
+                SizedBox(height: 16.h),
+                Text(
+                  'Amankan Data Anda!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                Text(
+                  'Anda belum mem-backup data kas minggu ini.\n\nKlik "Backup & Bagikan" lalu kirimkan file CSV-nya ke WhatsApp Anda sendiri atau keluarga terdekat.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: AppTheme.textMuted,
+                    height: 1.5,
+                  ),
+                ),
+                SizedBox(height: 24.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      backgroundColor: AppTheme.maroon,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                      elevation: 0,
+                    ),
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      try {
+                        final path = await BackupHelper.exportToCsv();
+                        await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
+                        Share.shareXFiles([XFile(path)], text: 'File Backup Data CatatKas UMKM');
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Gagal backup: $e', style: TextStyle(color: Colors.white)),
+                            backgroundColor: AppTheme.red,
+                          ));
+                        }
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.share_rounded, color: Colors.white, size: 18.sp),
+                        SizedBox(width: 8.w),
+                        Text('BACKUP & BAGIKAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    foregroundColor: AppTheme.textMuted,
+                  ),
+                  child: Text('Nanti Saja', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.sp)),
+                ),
+              ],
+            ),
           ),
-          content: Text('Anda belum mem-backup data kas minggu ini.\n\nKlik "Backup & Bagikan" lalu kirimkan file CSV-nya ke WhatsApp Anda sendiri atau keluarga terdekat, agar data aman jika HP hilang/rusak.', style: TextStyle(fontSize: 14.sp)),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Nanti Saja', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.green,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
-                try {
-                  final path = await BackupHelper.exportToCsv();
-                  await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
-                  Share.shareXFiles([XFile(path)], text: 'File Backup Data CatatKas UMKM');
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Gagal backup: $e', style: TextStyle(color: Colors.white)),
-                      backgroundColor: AppTheme.red,
-                    ));
-                  }
-                }
-              },
-              child: Text('Backup & Bagikan', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
         ),
       );
     }
