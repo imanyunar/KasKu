@@ -73,53 +73,54 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) => Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
           backgroundColor: Colors.white,
-          elevation: 8,
+          elevation: 0, // Dihilangkan elevation agar lebih flat & clean
           child: Container(
-            padding: EdgeInsets.all(24.r),
+            padding: EdgeInsets.all(28.r),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(24.r),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.15), width: 1.5),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: EdgeInsets.all(16.r),
+                  padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
-                    color: AppTheme.maroon.withValues(alpha: 0.1),
+                    color: AppTheme.maroon.withValues(alpha: 0.05), // Sangat soft
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.security_rounded, color: AppTheme.maroon, size: 42.sp),
+                  child: Icon(Icons.cloud_upload_outlined, color: AppTheme.maroon, size: 36.sp), // Icon lebih tipis/simple
                 ),
-                SizedBox(height: 16.h),
+                SizedBox(height: 20.h),
                 Text(
-                  'Amankan Data Anda!',
+                  'Amankan Data Anda',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
                     color: AppTheme.textDark,
-                    letterSpacing: -0.5,
                   ),
                 ),
                 SizedBox(height: 12.h),
                 Text(
-                  'Anda belum mem-backup data kas minggu ini.\n\nKlik "Backup & Bagikan" lalu kirimkan file CSV-nya ke WhatsApp Anda sendiri atau keluarga terdekat.',
+                  'Anda belum mem-backup data minggu ini. Bagikan file CSV ke WhatsApp agar data tetap aman jika HP hilang.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: AppTheme.textMuted,
-                    height: 1.5,
+                    color: Colors.black54,
+                    height: 1.6,
                   ),
                 ),
-                SizedBox(height: 24.h),
+                SizedBox(height: 32.h),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       backgroundColor: AppTheme.maroon,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.r)), // Pill shape sempurna
                       elevation: 0,
                     ),
                     onPressed: () async {
@@ -137,22 +138,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       }
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.share_rounded, color: Colors.white, size: 18.sp),
-                        SizedBox(width: 8.w),
-                        Text('BACKUP & BAGIKAN', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
-                      ],
-                    ),
+                    child: Text('Backup Sekarang', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
                   ),
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 12.h),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
+                    foregroundColor: Colors.black38,
                     padding: EdgeInsets.symmetric(vertical: 12.h),
-                    foregroundColor: AppTheme.textMuted,
                   ),
                   child: Text('Nanti Saja', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.sp)),
                 ),
