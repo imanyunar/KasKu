@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
@@ -43,10 +44,22 @@ class PdfHelper {
       throw Exception("Data transaksi kosong pada periode ini.");
     }
 
-    // 2. Offload PDF building & rendering ke background isolate agar UI 100% lancar
-    final pdfBytes = await compute(_buildPdfBytesInBackground, _PdfDataPayload(periodLabel, transactions));
+    // 2. Muat gambar logo untuk kop surat
+    Uint8List? unnesBytes;
+    Uint8List? semarangBytes;
+    try {
+      final unnesData = await rootBundle.load('assets/images/logo_unnes.png');
+      unnesBytes = unnesData.buffer.asUint8List();
+      final semarangData = await rootBundle.load('assets/images/logo_semarang.png');
+      semarangBytes = semarangData.buffer.asUint8List();
+    } catch (e) {
+      debugPrint('Gagal memuat logo untuk PDF: $e');
+    }
 
-    // 3. Simpan ke Folder Aplikasi Internal
+    // 3. Offload PDF building & rendering ke background isolate agar UI 100% lancar
+    final pdfBytes = await compute(_buildPdfBytesInBackground, _PdfDataPayload(periodLabel, transactions, unnesBytes, semarangBytes));
+
+    // 4. Simpan ke Folder Aplikasi Internal
     final directory = await getApplicationDocumentsDirectory();
     final now = DateTime.now();
     final dateTag = "${now.day.toString().padLeft(2, '0')}_${now.month.toString().padLeft(2, '0')}_${now.year}";
@@ -55,7 +68,7 @@ class PdfHelper {
 
     await file.writeAsBytes(pdfBytes, flush: true);
 
-    // 4. Salin ke Folder Download Publik Android
+    // 5. Salin ke Folder Download Publik Android
     String? downloadFilePath;
     try {
       final downloadDir = Directory('/storage/emulated/0/Download');
@@ -97,17 +110,39 @@ class PdfHelper {
           return [
             pw.Header(
               level: 0,
+              padding: const pw.EdgeInsets.only(bottom: 16),
               child: pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
                 children: [
-                  pw.Text("Laporan Keuangan CatatKas UMKM", style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
-                  pw.Text("Desa Manggihan", style: pw.TextStyle(fontSize: 12, color: PdfColors.grey700)),
+                  if (payload.logoSemarangBytes != null)
+                    pw.Image(pw.MemoryImage(payload.logoSemarangBytes!), width: 55, height: 55),
+                  
+                  pw.Expanded(
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                      children: [
+                        pw.Text("LAPORAN KEUANGAN BUKU KAS", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColors.blueGrey900)),
+                        pw.SizedBox(height: 4),
+                        pw.Text("UMKM Desa Manggihan, Kecamatan Banyubiru", style: pw.TextStyle(fontSize: 11, color: PdfColors.blueGrey800)),
+                        pw.SizedBox(height: 2),
+                        pw.Text("Didukung oleh Tim KKN UNNES", style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
+                      ],
+                    ),
+                  ),
+
+                  if (payload.logoUnnesBytes != null)
+                    pw.Image(pw.MemoryImage(payload.logoUnnesBytes!), width: 55, height: 55),
                 ],
               ),
             ),
             pw.SizedBox(height: 8),
-            pw.Text("Periode: ${payload.periodLabel}", style: const pw.TextStyle(fontSize: 13)),
-            pw.Text("Tanggal Cetak: ${DateTime.now().toString().split('.')[0]}", style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey600)),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text("Periode: ${payload.periodLabel}", style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+                pw.Text("Dicetak: ${DateTime.now().toString().split('.')[0]}", style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey700)),
+              ]
+            ),
             pw.SizedBox(height: 16),
             
             // Tabel Transaksi
@@ -167,6 +202,8 @@ class PdfHelper {
 class _PdfDataPayload {
   final String periodLabel;
   final List<TransactionItem> transactions;
+  final Uint8List? logoUnnesBytes;
+  final Uint8List? logoSemarangBytes;
 
-  _PdfDataPayload(this.periodLabel, this.transactions);
+  _PdfDataPayload(this.periodLabel, this.transactions, this.logoUnnesBytes, this.logoSemarangBytes);
 }
