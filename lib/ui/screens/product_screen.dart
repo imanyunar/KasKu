@@ -194,10 +194,10 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppTheme.maroon,
-        foregroundColor: AppTheme.gold,
+        foregroundColor: Colors.white,
         onPressed: () => _showAddDialog(),
-        icon: Icon(Icons.add, size: 28),
-        label: Text('TAMBAH PRODUK', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        icon: Icon(Icons.add_circle_rounded, size: 22.sp),
+        label: Text('TAMBAH PRODUK', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
       ),
     );
   }
