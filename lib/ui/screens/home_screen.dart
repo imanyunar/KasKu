@@ -203,7 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
           dismissDirection: DismissDirection.horizontal,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: AppTheme.green,
-          duration: const Duration(seconds: 15),
+          duration: const Duration(seconds: 8),
+          showCloseIcon: true,
+          closeIconColor: Colors.white,
           content: Text('PDF Laporan Bulan Ini Berhasil Dibuat',
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(

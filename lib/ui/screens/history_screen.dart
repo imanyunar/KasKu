@@ -137,7 +137,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           dismissDirection: DismissDirection.horizontal,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
           backgroundColor: AppTheme.green,
-          duration: const Duration(seconds: 15),
+          duration: const Duration(seconds: 8),
+          showCloseIcon: true,
+          closeIconColor: Colors.white,
           content: Text('PDF Berhasil Dibuat & Tersimpan di Download',
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(
