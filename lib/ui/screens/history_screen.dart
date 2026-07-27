@@ -131,28 +131,106 @@ class _HistoryScreenState extends State<HistoryScreen> {
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          dismissDirection: DismissDirection.horizontal,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          backgroundColor: AppTheme.green,
-          duration: const Duration(seconds: 3),
-          content: Text('PDF Berhasil Dibuat & Tersimpan di Download',
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
-          action: SnackBarAction(
-            label: 'BAGIKAN',
-            textColor: Colors.white,
-            onPressed: () {
-              try {
-                Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas UMKM - $_selectedFilter');
-              } catch (_) {}
-            },
+      
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          child: Container(
+            padding: EdgeInsets.all(28.r),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24.r),
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.15), width: 1.5),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(20.r),
+                  decoration: BoxDecoration(
+                    color: AppTheme.green.withValues(alpha: 0.05),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.check_circle_outline_rounded, color: AppTheme.green, size: 36.sp),
+                ),
+                SizedBox(height: 20.h),
+                Text(
+                  'PDF Berhasil Dibuat!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                ),
+                SizedBox(height: 12.h),
+                Text(
+                  'Laporan keuangan Anda telah siap. Apa yang ingin Anda lakukan selanjutnya?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13.sp, color: Colors.black54, height: 1.6),
+                ),
+                SizedBox(height: 32.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      backgroundColor: AppTheme.maroon,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.r)),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      try {
+                        Share.shareXFiles([XFile(result.internalPath)], text: 'Laporan Keuangan CatatKas UMKM - $_selectedFilter');
+                      } catch (_) {}
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.share_rounded, size: 18.sp),
+                        SizedBox(width: 8.w),
+                        Text('Bagikan (WhatsApp)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      foregroundColor: AppTheme.textDark,
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.r)),
+                    ),
+                    onPressed: () {
+                      OpenFilex.open(result.internalPath);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.visibility_rounded, size: 18.sp),
+                        SizedBox(width: 8.w),
+                        Text('Lihat Laporan', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.black38,
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                  ),
+                  child: Text('Tutup', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.sp)),
+                ),
+              ],
+            ),
           ),
         ),
       );
-
-      OpenFilex.open(result.internalPath);
     } catch (e) {
       if (!mounted) return;
       Navigator.pop(context);
