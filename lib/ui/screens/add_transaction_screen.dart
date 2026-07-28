@@ -83,7 +83,24 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    final isDirty = _quickInputController.text.isNotEmpty || _nameController.text.isNotEmpty;
+    bool isDirty = false;
+    
+    if (widget.existingItem != null) {
+      // Jika mode Edit, cek apakah ada nilai yang berubah
+      final originalName = widget.existingItem!.name;
+      final originalPrice = widget.existingItem!.price.toInt().toString();
+      final originalQty = widget.existingItem!.qty.toString();
+      
+      if (_nameController.text.trim() != originalName ||
+          _priceController.text.trim() != originalPrice ||
+          _qtyController.text.trim() != originalQty) {
+        isDirty = true;
+      }
+    } else {
+      // Jika mode Tambah Baru, cek apakah ada teks yang diketik
+      isDirty = _quickInputController.text.isNotEmpty || _nameController.text.isNotEmpty;
+    }
+
     if (!isDirty) return true;
 
     final confirm = await showDialog<bool>(

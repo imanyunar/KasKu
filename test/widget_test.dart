@@ -5,5 +5,8 @@ void main() {
   testWidgets('CatatKasApp smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const CatatKasApp());
     expect(find.byType(CatatKasApp), findsOneWidget);
+    
+    // Tunggu splash screen selesai loading dan timer 2 detiknya habis
+    await tester.pumpAndSettle(const Duration(seconds: 3));
   });
 }
