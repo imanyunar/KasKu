@@ -119,6 +119,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
+          // ignore: deprecated_member_use
           shadowColor: maroon.withOpacity(0.35),
         ),
       ),

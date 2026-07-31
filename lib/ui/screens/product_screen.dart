@@ -5,6 +5,7 @@ import 'package:catatkas/core/models/product_item.dart';
 import 'package:catatkas/core/database/database_helper.dart';
 import 'package:catatkas/ui/widgets/custom_text_field.dart';
 import 'package:catatkas/core/utils/currency_formatter.dart';
+
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
 
@@ -41,8 +42,11 @@ class _ProductScreenState extends State<ProductScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(existingItem == null ? 'Tambah Produk Langganan' : 'Edit Produk', 
-                      style: TextStyle(fontSize: 22.sp)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+          title: Text(
+            existingItem == null ? 'Tambah Produk Langganan' : 'Edit Produk',
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -68,10 +72,14 @@ class _ProductScreenState extends State<ProductScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Batal', style: TextStyle(fontSize: 18.sp)),
+              child: Text('BATAL', style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.maroon, foregroundColor: AppTheme.gold),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.maroon,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+              ),
               onPressed: () async {
                 final name = nameController.text.trim();
                 
@@ -97,9 +105,20 @@ class _ProductScreenState extends State<ProductScreen> {
                   
                   if (context.mounted) Navigator.pop(context);
                   _loadProducts();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Nama produk dan harga tidak boleh kosong/nol!', style: TextStyle(color: Colors.white, fontSize: 14.sp)),
+                      backgroundColor: AppTheme.red,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
                 }
               },
-              child: Text(existingItem == null ? 'SIMPAN' : 'UPDATE', style: TextStyle(fontSize: 18.sp)),
+              child: Text(
+                existingItem == null ? 'SIMPAN' : 'UPDATE',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -111,17 +130,25 @@ class _ProductScreenState extends State<ProductScreen> {
     final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Hapus Produk?', style: TextStyle(fontSize: 22.sp)),
-        content: Text('Hapus "${item.name}" dari daftar langganan?', style: TextStyle(fontSize: 18.sp)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        title: Text('Hapus Produk?', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        content: Text(
+          'Hapus "${item.name}" dari daftar langganan?',
+          style: TextStyle(fontSize: 15.sp),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Batal', style: TextStyle(fontSize: 18.sp)),
+            child: Text('Batal', style: TextStyle(fontSize: 14.sp, color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+            ),
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Ya, Hapus', style: TextStyle(fontSize: 18.sp, color: Colors.white)),
+            child: Text('Ya, Hapus', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -133,59 +160,100 @@ class _ProductScreenState extends State<ProductScreen> {
     }
   }
 
-  String _formatCurrency(double amount) {
-    return CurrencyFormatter.format(amount);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text('Daftar Produk'),
+        title: const Text('Daftar Produk'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 32),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _products.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.inventory_2_outlined, size: 100, color: Colors.grey[400]),
-                      SizedBox(height: 16.h),
+                      Icon(Icons.inventory_2_outlined, size: 54.sp, color: Colors.grey.shade300),
+                      SizedBox(height: 12.h),
                       Text(
                         'Belum ada produk langganan.',
-                        style: TextStyle(fontSize: 22.sp, color: Colors.black54),
+                        style: TextStyle(fontSize: 14.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: 4.h),
                       Text(
                         'Klik tombol di bawah untuk menambah.',
-                        style: TextStyle(fontSize: 16.sp, color: Colors.black38),
+                        style: TextStyle(fontSize: 13.sp, color: AppTheme.textMuted),
                       ),
                     ],
                   ),
                 )
               : ListView.builder(
-                  padding: EdgeInsets.all(16.0.r),
+                  padding: EdgeInsets.all(16.r),
                   itemCount: _products.length,
                   itemBuilder: (context, index) {
                     final item = _products[index];
-                    return Card(
-                      margin: EdgeInsets.only(bottom: 12.0),
-                      elevation: 2,
-                      child: InkWell(
-                        onTap: () => _showAddDialog(existingItem: item),
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(16.0.r),
-                          title: Text(item.name, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold)),
-                          subtitle: Text('${_formatCurrency(item.defaultPrice)} / ${item.defaultUnit}', style: TextStyle(fontSize: 18.sp)),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.grey, size: 32),
-                            onPressed: () => _confirmDelete(item),
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(color: Colors.grey.withValues(alpha: 0.08)),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withValues(alpha: 0.015), blurRadius: 6, offset: const Offset(0, 2)),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => _showAddDialog(existingItem: item),
+                          borderRadius: BorderRadius.circular(16.r),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 38.r,
+                                  height: 38.r,
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.gold.withValues(alpha: 0.12),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.inventory_2_rounded, color: AppTheme.gold, size: 18.sp),
+                                  ),
+                                ),
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.name,
+                                        style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 2.h),
+                                      Text(
+                                        '${CurrencyFormatter.format(item.defaultPrice)} / ${item.defaultUnit}',
+                                        style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete_outline_rounded, color: Colors.grey.shade300, size: 18.sp),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () => _confirmDelete(item),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -197,7 +265,7 @@ class _ProductScreenState extends State<ProductScreen> {
         foregroundColor: Colors.white,
         onPressed: () => _showAddDialog(),
         icon: Icon(Icons.add_circle_rounded, size: 22.sp),
-        label: Text('TAMBAH PRODUK', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+        label: Text('TAMBAH PRODUK', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
       ),
     );
   }

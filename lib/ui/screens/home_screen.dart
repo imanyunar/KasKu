@@ -22,10 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  double _saldoHariIni = 0;
+  double _saldoTotal = 0;
   double _totalPemasukanBulanIni = 0;
   double _totalPengeluaranBulanIni = 0;
-  double _labaBersihBulanIni = 0;
   bool _isLoading = true;
 
   @override
@@ -46,10 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final summary = await DatabaseHelper.instance.getReportSummary(startOfMonth, endOfMonth);
 
     setState(() {
-      _saldoHariIni = saldoTotal;
+      _saldoTotal = saldoTotal;
       _totalPemasukanBulanIni = summary['pemasukan'] ?? 0;
       _totalPengeluaranBulanIni = summary['pengeluaran'] ?? 0;
-      _labaBersihBulanIni = summary['untung'] ?? 0;
       _isLoading = false;
     });
 
@@ -70,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!mounted) return;
       showDialog(
         context: context,
-        builder: (context) => Dialog(
+        builder: (dialogContext) => Dialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
           backgroundColor: Colors.white,
           elevation: 0, // Dihilangkan elevation agar lebih flat & clean
@@ -124,15 +122,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       elevation: 0,
                     ),
                     onPressed: () async {
-                      Navigator.pop(context);
+                      final sm = ScaffoldMessenger.of(context);
+                      Navigator.pop(dialogContext);
                       try {
                         final path = await BackupHelper.exportToCsv();
                         await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
                         Share.shareXFiles([XFile(path)], text: 'File Backup Data CatatKas UMKM');
                       } catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Gagal backup: $e', style: TextStyle(color: Colors.white)),
+                          sm.showSnackBar(SnackBar(
+                            content: Text('Gagal backup: $e', style: const TextStyle(color: Colors.white)),
                             backgroundColor: AppTheme.red,
                           ));
                         }
@@ -143,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: 12.h),
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(dialogContext),
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black38,
                     padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -277,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 320.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppTheme.maroon.withOpacity(0.08),
+                color: AppTheme.maroon.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -302,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.white,
                               shape: BoxShape.circle,
                               boxShadow: [
-                                BoxShadow(color: AppTheme.maroon.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 3)),
+                                BoxShadow(color: AppTheme.maroon.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, 3)),
                               ],
                             ),
                             child: Image.asset(
@@ -315,12 +314,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'CatatKas UMKM • $dateFormatted',
+                                'Desa Manggihan • $dateFormatted',
                                 style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w600),
                               ),
                               SizedBox(height: 2.h),
                               Text(
-                                'Desa Manggihan',
+                                'GIAT 16 UNNES',
                                 style: TextStyle(fontSize: 18.sp, color: AppTheme.textDark, fontWeight: FontWeight.w800),
                               ),
                             ],
@@ -331,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(14.r),
-                          border: Border.all(color: Colors.grey.withOpacity(0.15)),
+                          border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                         ),
                         child: IconButton(
                           icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 20.sp),
@@ -356,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(24.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.maroon.withOpacity(0.3),
+                          color: AppTheme.maroon.withValues(alpha: 0.3),
                           blurRadius: 18,
                           offset: const Offset(0, 8),
                         ),
@@ -371,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.15),
+                                color: Colors.white.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(14.r),
                               ),
                               child: Row(
@@ -404,9 +403,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${_saldoHariIni < 0 ? "- " : "+ "}${_formatCurrency(_saldoHariIni)}',
+                                '${_saldoTotal < 0 ? "- " : "+ "}${_formatCurrency(_saldoTotal)}',
                                 style: TextStyle(
-                                  color: _saldoHariIni >= 0 ? Colors.white : const Color(0xFFFF8A80),
+                                  color: _saldoTotal >= 0 ? Colors.white : const Color(0xFFFF8A80),
                                   fontSize: 36.sp,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: -1,
@@ -427,9 +426,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                      border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 3)),
                       ],
                     ),
                     child: Column(
@@ -448,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                                 decoration: BoxDecoration(
-                                  color: AppTheme.maroon.withOpacity(0.08),
+                                  color: AppTheme.maroon.withValues(alpha: 0.08),
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
                                 child: Row(
@@ -548,7 +547,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           subtitle: 'Daftar & Edit Catatan',
                           icon: Icons.history_rounded,
                           iconColor: AppTheme.maroon,
-                          iconBg: AppTheme.maroon.withOpacity(0.08),
+                          iconBg: AppTheme.maroon.withValues(alpha: 0.08),
                           onTap: () async {
                             await Navigator.push(context, _createRoute(const HistoryScreen()));
                             _loadDashboardData();
@@ -562,7 +561,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           subtitle: 'Daftar Barang Usaha',
                           icon: Icons.inventory_2_rounded,
                           iconColor: AppTheme.gold,
-                          iconBg: AppTheme.gold.withOpacity(0.12),
+                          iconBg: AppTheme.gold.withValues(alpha: 0.12),
                           onTap: () async {
                             await Navigator.push(context, _createRoute(const ProductScreen()));
                           },
@@ -580,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(24.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.maroon.withOpacity(0.3),
+                          color: AppTheme.maroon.withValues(alpha: 0.3),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -637,9 +636,9 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+            BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 3)),
           ],
         ),
         child: Column(

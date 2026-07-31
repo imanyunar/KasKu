@@ -163,9 +163,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                  border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
                   ],
                 ),
                 child: Row(
@@ -254,9 +254,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           width: double.infinity,
           padding: EdgeInsets.all(14.r),
           decoration: BoxDecoration(
-            color: AppTheme.maroon.withOpacity(0.05),
+            color: AppTheme.maroon.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: AppTheme.maroon.withOpacity(0.12)),
+            border: Border.all(color: AppTheme.maroon.withValues(alpha: 0.12)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +304,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 decoration: BoxDecoration(
                   color: statusBg,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: statusColor.withOpacity(0.3)),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
@@ -352,9 +352,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 6, offset: const Offset(0, 2)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 6, offset: const Offset(0, 2)),
             ],
           ),
           child: Row(
@@ -369,7 +369,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       color: _isJual ? AppTheme.green : Colors.transparent,
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: _isJual ? [
-                        BoxShadow(color: AppTheme.green.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
+                        BoxShadow(color: AppTheme.green.withValues(alpha: 0.25), blurRadius: 6, offset: const Offset(0, 3))
                       ] : [],
                     ),
                     child: Row(
@@ -397,7 +397,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       color: !_isJual ? AppTheme.red : Colors.transparent,
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: !_isJual ? [
-                        BoxShadow(color: AppTheme.red.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 3))
+                        BoxShadow(color: AppTheme.red.withValues(alpha: 0.25), blurRadius: 6, offset: const Offset(0, 3))
                       ] : [],
                     ),
                     child: Row(
@@ -424,9 +424,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 3)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 8, offset: const Offset(0, 3)),
             ],
           ),
           padding: EdgeInsets.all(18.r),
@@ -470,7 +470,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
-                        borderSide: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1),
+                        borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.15), width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),

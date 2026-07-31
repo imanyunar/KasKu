@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_filex/open_filex.dart';
 import 'package:catatkas/core/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateChecker {
   static const String _versionUrl = 
       'https://raw.githubusercontent.com/imanyunar/catatkas-web/main/public/version.json';
-  static const String currentVersion = '1.0.0';
+  static const String currentVersion = '1.0.2';
 
   static Future<void> checkUpdate(BuildContext context) async {
     try {

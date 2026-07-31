@@ -121,11 +121,11 @@ class PdfHelper {
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.center,
                       children: [
-                        pw.Text("LAPORAN KEUANGAN BUKU KAS", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColors.blueGrey900)),
+                        pw.Text("LAPORAN KEUANGAN BUKU KAS", style: const pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: PdfColors.blueGrey900)),
                         pw.SizedBox(height: 4),
-                        pw.Text("UMKM Desa Manggihan, Kecamatan Banyubiru", style: pw.TextStyle(fontSize: 11, color: PdfColors.blueGrey800)),
+                        pw.Text("UMKM Desa Manggihan, Kecamatan Getasan", style: const pw.TextStyle(fontSize: 11, color: PdfColors.blueGrey800)),
                         pw.SizedBox(height: 2),
-                        pw.Text("Didukung oleh Tim KKN UNNES", style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
+                        pw.Text("Didukung oleh Tim GIAT 16 UNNES Desa Manggihan", style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
                       ],
                     ),
                   ),
@@ -139,7 +139,7 @@ class PdfHelper {
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Text("Periode: ${payload.periodLabel}", style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+                pw.Text("Periode: ${payload.periodLabel}", style: const pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
                 pw.Text("Dicetak: ${DateTime.now().toString().split('.')[0]}", style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey700)),
               ]
             ),
@@ -164,7 +164,7 @@ class PdfHelper {
                   ];
                 },
               ),
-              headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.white),
+              headerStyle: const pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.white),
               headerDecoration: const pw.BoxDecoration(color: PdfColors.blueGrey800),
               cellAlignment: pw.Alignment.centerLeft,
             ),

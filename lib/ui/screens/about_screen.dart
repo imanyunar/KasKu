@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:catatkas/core/theme.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -9,9 +8,9 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tentang CatatKas UMKM'),
+        title: const Text('Tentang CatatKas UMKM'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 32),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -35,7 +34,7 @@ class AboutScreen extends StatelessWidget {
               style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Versi 1.0.0',
+              'Versi 1.0.2',
               style: TextStyle(fontSize: 18.sp, color: Colors.black54),
             ),
             SizedBox(height: 32.h),

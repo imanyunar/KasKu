@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 260.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppTheme.gold.withOpacity(0.12),
+                  color: AppTheme.gold.withValues(alpha: 0.12),
                 ),
               ),
             ),
@@ -83,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 300.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppTheme.maroonLight.withOpacity(0.2),
+                  color: AppTheme.maroonLight.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -99,11 +99,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(32.r),
-                      border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 24, offset: const Offset(0, 10)),
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.2), blurRadius: 24, offset: const Offset(0, 10)),
                       ],
                     ),
                     child: Row(
@@ -137,8 +137,8 @@ class _SplashScreenState extends State<SplashScreen> {
                       fontWeight: FontWeight.w900,
                       color: AppTheme.gold,
                       letterSpacing: 2.0,
-                      shadows: [
-                        Shadow(color: Colors.black38, blurRadius: 12, offset: const Offset(0, 4)),
+                      shadows: const [
+                        Shadow(color: Colors.black38, blurRadius: 12, offset: Offset(0, 4)),
                       ],
                     ),
                   ),
@@ -146,7 +146,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Text(

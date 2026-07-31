@@ -238,7 +238,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Container(
             margin: EdgeInsets.only(right: 12.w),
             decoration: BoxDecoration(
-              color: AppTheme.maroon.withOpacity(0.08),
+              color: AppTheme.maroon.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14.r),
             ),
             child: IconButton(
@@ -278,7 +278,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.grey.withOpacity(0.15)),
+                      border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                     ),
                     child: Text(
                       '${_transactions.length} Data',
@@ -382,9 +382,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.maroon : Colors.white,
           borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: isSelected ? AppTheme.maroon : Colors.grey.withOpacity(0.15)),
+          border: Border.all(color: isSelected ? AppTheme.maroon : Colors.grey.withValues(alpha: 0.15)),
           boxShadow: isSelected
-              ? [BoxShadow(color: AppTheme.maroon.withOpacity(0.2), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [BoxShadow(color: AppTheme.maroon.withValues(alpha: 0.2), blurRadius: 4, offset: const Offset(0, 2))]
               : [],
         ),
         child: Row(
@@ -481,9 +481,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(color: Colors.grey.withOpacity(0.08)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.08)),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.015), blurRadius: 6, offset: const Offset(0, 2)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.015), blurRadius: 6, offset: const Offset(0, 2)),
             ],
           ),
           child: Material(

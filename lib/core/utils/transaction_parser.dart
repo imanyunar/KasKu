@@ -65,10 +65,23 @@ class TransactionParser {
 
     Match? match = regexA.firstMatch(cleanInput);
     bool isTypeB = false;
+    bool isTypeC = false;
 
     if (match == null || (match.group(1)?.trim().isEmpty ?? true)) {
       match = regexB.firstMatch(cleanInput);
       isTypeB = true;
+    }
+
+    // 4. Pola Regex C (Fallback): [Nama] [Price] - tanpa qty/unit eksplisit
+    //    Contoh: "token listrik 100rb", "bawang 15rb"
+    if (match == null) {
+      final RegExp regexC = RegExp(
+        r'^([a-zA-Z].*?)\s+([\d.,]+)\s*(rb|ribu|jt|juta)?$',
+        caseSensitive: false,
+      );
+      match = regexC.firstMatch(cleanInput);
+      isTypeB = false;
+      isTypeC = true;
     }
 
     if (match == null) {
@@ -82,7 +95,14 @@ class TransactionParser {
     String priceStr = "0";
     String? nominalStr;
 
-    if (!isTypeB) {
+    if (isTypeC) {
+      // Form C: [Name] [Price] — qty default 1, unit default pcs
+      name = match.group(1)?.trim() ?? "";
+      qtyStr = "1";
+      unit = "pcs";
+      priceStr = match.group(2) ?? "0";
+      nominalStr = match.group(3)?.toLowerCase();
+    } else if (!isTypeB) {
       // Form A: [Name] [Qty] [Unit] [Price]
       name = match.group(1)?.trim() ?? "";
       qtyStr = match.group(2)?.replaceAll(',', '.') ?? "1";

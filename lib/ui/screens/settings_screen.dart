@@ -15,9 +15,9 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text('Pengaturan & Backup'),
+        title: const Text('Pengaturan & Backup'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, size: 24),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -103,7 +103,7 @@ class SettingsScreen extends StatelessWidget {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('SUKSES! Berhasil mengembalikan $count transaksi.', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                        content: Text('SUKSES! Berhasil mengembalikan $count data.', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                         backgroundColor: AppTheme.green,
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
@@ -188,9 +188,9 @@ class SettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(color: Colors.grey.withOpacity(0.05)),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -201,7 +201,7 @@ class SettingsScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(10.r),
                 decoration: BoxDecoration(
-                  color: AppTheme.maroon.withOpacity(0.1),
+                  color: AppTheme.maroon.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: AppTheme.maroon, size: 24),

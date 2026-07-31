@@ -65,26 +65,37 @@ void main() {
       );
     });
 
-    test('TC-07: Tidak ada kuantitas atau harga', () {
-      expect(
-        () => TransactionParser.parse("jual bawang 15rb"),
-        throwsA(isA<FormatException>()), // Gagal dicocokkan regex karena butuh 2 grup angka
-      );
+    test('TC-07: Format tanpa kuantitas (Regex C fallback)', () {
+      final item = TransactionParser.parse("jual bawang 15rb");
+      
+      expect(item.isJual, isTrue);
+      expect(item.name, "bawang");
+      expect(item.qty, 1.0); // default qty
+      expect(item.unit, "pcs"); // default unit
+      expect(item.price, 15000.0);
     });
 
     test('TC-08: Tidak ada nama barang', () {
       expect(
         () => TransactionParser.parse("jual 1kg 15rb"),
-        throwsA(
-          isA<FormatException>().having((e) => e.message, 'message', "Nama barang tidak boleh kosong.")
-        ),
+        throwsA(isA<FormatException>()),
       );
     });
 
-    test('TC-09: Tidak ada kuantitas, hanya nama dan harga', () {
+    test('TC-09: Format tanpa kuantitas, nama multi-kata (Regex C)', () {
+      final item = TransactionParser.parse("beli token listrik 100rb");
+      
+      expect(item.isJual, isFalse);
+      expect(item.name, "token listrik");
+      expect(item.qty, 1.0);
+      expect(item.unit, "pcs");
+      expect(item.price, 100000.0);
+    });
+
+    test('TC-10: Input tanpa angka sama sekali', () {
       expect(
-        () => TransactionParser.parse("beli token listrik 100rb"),
-        throwsA(isA<FormatException>()), // Gagal dicocokkan regex
+        () => TransactionParser.parse("beli beras satu karung"),
+        throwsA(isA<FormatException>()),
       );
     });
   });
