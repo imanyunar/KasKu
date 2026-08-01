@@ -35,16 +35,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final now = DateTime.now();
     if (_selectedFilter == 'HARI INI') {
       _currentStart = DateTime(now.year, now.month, now.day);
-      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
     } else if (_selectedFilter == 'MINGGU INI') {
       _currentStart = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 6));
-      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
     } else if (_selectedFilter == 'BULAN INI') {
       _currentStart = DateTime(now.year, now.month, 1);
-      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
     } else if (_selectedFilter == 'SEMUA') {
       _currentStart = DateTime(2000, 1, 1);
-      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      _currentEnd = DateTime(2100, 12, 31, 23, 59, 59, 999);
     }
   }
 
@@ -354,7 +354,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           if (picked != null) {
             setState(() {
               _currentStart = picked.start;
-              _currentEnd = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59, 59);
+              _currentEnd = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59, 59, 999);
 
               String startStr =
                   "${picked.start.day.toString().padLeft(2, '0')}/${picked.start.month.toString().padLeft(2, '0')}";

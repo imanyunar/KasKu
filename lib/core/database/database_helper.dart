@@ -151,8 +151,8 @@ CREATE TABLE products (
   Future<Map<String, double>> getReportSummary(DateTime start, DateTime end) async {
     final db = await instance.database;
     final startStr = start.toIso8601String();
-    // Untuk end, kita ambil sampai penghujung hari (23:59:59)
-    final endStr = DateTime(end.year, end.month, end.day, 23, 59, 59).toIso8601String();
+    // Untuk end, kita ambil sampai penghujung hari (23:59:59.999)
+    final endStr = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).toIso8601String();
 
     final result = await db.query(
       'transactions',

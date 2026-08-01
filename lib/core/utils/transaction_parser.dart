@@ -125,7 +125,13 @@ class TransactionParser {
     final qty = double.tryParse(qtyStr) ?? 1.0;
 
     // Parsing Harga (Indonesian locale: 30.000 -> 30000, 30,5 -> 30.5)
-    priceStr = priceStr.replaceAll('.', '').replaceAll(',', '.');
+    if (priceStr.contains(',') && priceStr.contains('.')) {
+      priceStr = priceStr.replaceAll('.', '').replaceAll(',', '.');
+    } else if (priceStr.contains(',')) {
+      priceStr = priceStr.replaceAll(',', '.');
+    } else if (priceStr.contains('.') && priceStr.split('.').last.length == 3) {
+      priceStr = priceStr.replaceAll('.', '');
+    }
     double price = double.tryParse(priceStr) ?? 0.0;
 
     if (nominalStr == 'rb' || nominalStr == 'ribu') {

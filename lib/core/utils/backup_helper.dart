@@ -10,11 +10,14 @@ class BackupHelper {
   static Future<String> exportToCsv() async {
     // 1. Meminta Izin Akses Memori
     if (Platform.isAndroid) {
-      if (await Permission.manageExternalStorage.request().isGranted || 
-          await Permission.storage.request().isGranted) {
-        // Izin diberikan
-      } else {
-        throw Exception("Izin penyimpanan ditolak. Tidak bisa melakukan backup.");
+      try {
+        var manageStatus = await Permission.manageExternalStorage.status;
+        if (!manageStatus.isGranted) await Permission.manageExternalStorage.request();
+        
+        var storageStatus = await Permission.storage.status;
+        if (!storageStatus.isGranted) await Permission.storage.request();
+      } catch (e) {
+        // Lanjutkan saja, karena Scoped Storage Android 10+ mengizinkan penulisan ke folder Download
       }
     }
 

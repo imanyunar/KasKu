@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    final endOfMonth = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     final saldoTotal = await DatabaseHelper.instance.getTotalSaldo();
     final summary = await DatabaseHelper.instance.getReportSummary(startOfMonth, endOfMonth);
@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _exportPdfDashboard() async {
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    final endOfMonth = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
 
     showDialog(
       context: context,

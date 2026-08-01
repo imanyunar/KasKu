@@ -61,6 +61,8 @@ class SettingsScreen extends StatelessWidget {
                     errorMsg = 'Terjadi kesalahan saat memproses data.';
                   } else if (errorMsg.contains('Exception:')) {
                     errorMsg = errorMsg.split('Exception:').last.trim();
+                  } else if (errorMsg.contains('PlatformException')) {
+                    errorMsg = 'Akses ditolak atau terjadi kesalahan pada sistem Android Anda.';
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -118,6 +120,8 @@ class SettingsScreen extends StatelessWidget {
                     errorMsg = 'Terjadi kesalahan sistem saat memproses data.';
                   } else if (errorMsg.contains('Exception:')) {
                     errorMsg = errorMsg.split('Exception:').last.trim();
+                  } else if (errorMsg.contains('PlatformException')) {
+                    errorMsg = 'Akses ditolak atau file CSV tidak didukung sistem Android Anda.';
                   }
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
