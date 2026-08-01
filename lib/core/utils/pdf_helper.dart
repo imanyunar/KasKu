@@ -10,9 +10,8 @@ import 'package:catatkas/core/utils/currency_formatter.dart';
 
 class PdfExportResult {
   final String internalPath;
-  final String? downloadPath;
 
-  PdfExportResult({required this.internalPath, this.downloadPath});
+  PdfExportResult({required this.internalPath});
 }
 
 class PdfHelper {
@@ -21,7 +20,7 @@ class PdfHelper {
     // 1. Ambil data dari SQLite (Async I/O)
     final db = await DatabaseHelper.instance.database;
     final startStr = start.toIso8601String();
-    final endStr = DateTime(end.year, end.month, end.day, 23, 59, 59).toIso8601String();
+    final endStr = DateTime(end.year, end.month, end.day, 23, 59, 59, 999).toIso8601String();
 
     List<Map<String, dynamic>> result;
     if (periodLabel == 'SEMUA') {
@@ -68,22 +67,8 @@ class PdfHelper {
 
     await file.writeAsBytes(pdfBytes, flush: true);
 
-    // 5. Salin ke Folder Download Publik Android
-    String? downloadFilePath;
-    try {
-      final downloadDir = Directory('/storage/emulated/0/Download');
-      if (await downloadDir.exists()) {
-        final downloadFile = File('${downloadDir.path}/$filename');
-        await downloadFile.writeAsBytes(pdfBytes, flush: true);
-        downloadFilePath = downloadFile.path;
-      }
-    } catch (_) {
-      // Background copy fallback
-    }
-
     return PdfExportResult(
       internalPath: file.path,
-      downloadPath: downloadFilePath,
     );
   }
 

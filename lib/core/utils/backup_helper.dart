@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:catatkas/core/database/database_helper.dart';
 import 'package:catatkas/core/models/transaction_item.dart';
 import 'package:catatkas/core/models/product_item.dart';
@@ -8,18 +8,7 @@ import 'package:catatkas/core/models/product_item.dart';
 class BackupHelper {
   /// Ekspor data transaksi DAN produk ke file CSV di folder Download
   static Future<String> exportToCsv() async {
-    // 1. Meminta Izin Akses Memori
-    if (Platform.isAndroid) {
-      try {
-        var manageStatus = await Permission.manageExternalStorage.status;
-        if (!manageStatus.isGranted) await Permission.manageExternalStorage.request();
-        
-        var storageStatus = await Permission.storage.status;
-        if (!storageStatus.isGranted) await Permission.storage.request();
-      } catch (e) {
-        // Lanjutkan saja, karena Scoped Storage Android 10+ mengizinkan penulisan ke folder Download
-      }
-    }
+    // Izin akses tidak diperlukan karena disimpan di folder internal lalu di-share
 
     // 2. Ambil data dari SQLite
     final transactions = await DatabaseHelper.instance.getAllTransactions();
@@ -62,8 +51,8 @@ class BackupHelper {
 
     String csvString = const ListToCsvConverter().convert(csvData);
 
-    // 4. Simpan ke Folder Download
-    final directory = Directory('/storage/emulated/0/Download');
+    // 4. Simpan ke Folder Internal (nanti akan dibagikan dengan SharePlus)
+    final directory = await getApplicationDocumentsDirectory();
     if (!await directory.exists()) {
       await directory.create(recursive: true);
     }

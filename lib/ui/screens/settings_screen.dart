@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:catatkas/core/theme.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:catatkas/core/utils/backup_helper.dart';
 import 'package:catatkas/ui/screens/product_screen.dart';
 import 'package:catatkas/ui/screens/about_screen.dart';
@@ -46,15 +47,19 @@ class SettingsScreen extends StatelessWidget {
                   await prefs.setInt('lastBackupDate', DateTime.now().millisecondsSinceEpoch);
                   
                   if (!context.mounted) return;
+                  
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('SUKSES! Data tersimpan di:\n$path', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                      content: Text('SUKSES! Data berhasil di-backup.', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                       backgroundColor: AppTheme.green,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-                      duration: const Duration(seconds: 5),
+                      duration: const Duration(seconds: 3),
                     ),
                   );
+
+                  // Menampilkan pop-up Share bawaan HP
+                  Share.shareXFiles([XFile(path)], text: 'Backup Data CatatKas UMKM');
                 } catch (e) {
                   if (!context.mounted) return;
                   String errorMsg = e.toString();

@@ -42,6 +42,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     } else if (_selectedFilter == 'BULAN INI') {
       _currentStart = DateTime(now.year, now.month, 1);
       _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    } else if (_selectedFilter == 'TAHUN INI') {
+      _currentStart = DateTime(now.year, 1, 1);
+      _currentEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
     } else if (_selectedFilter == 'SEMUA') {
       _currentStart = DateTime(2000, 1, 1);
       _currentEnd = DateTime(2100, 12, 31, 23, 59, 59, 999);
@@ -85,6 +88,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return _selectedFilter != 'HARI INI' &&
         _selectedFilter != 'MINGGU INI' &&
         _selectedFilter != 'BULAN INI' &&
+        _selectedFilter != 'TAHUN INI' &&
         _selectedFilter != 'SEMUA';
   }
 
@@ -311,7 +315,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Widget _buildFilterSection() {
-    final filters = ['HARI INI', 'MINGGU INI', 'BULAN INI', 'SEMUA'];
+    final filters = ['HARI INI', 'MINGGU INI', 'BULAN INI', 'TAHUN INI', 'SEMUA'];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -321,7 +325,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 padding: EdgeInsets.only(right: 6.w),
                 child: _buildFilterChip(filter),
               )),
-          _buildFilterChip(_isCustomMode() ? _selectedFilter : 'PILIH TANGGAL', isCustomButton: true),
+          _buildFilterChip(_isCustomMode() ? _selectedFilter : 'RENTANG WAKTU', isCustomButton: true),
         ],
       ),
     );
