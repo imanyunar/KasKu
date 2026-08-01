@@ -337,42 +337,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return GestureDetector(
       onTap: () async {
         if (isCustomButton) {
-          final picked = await showDateRangePicker(
-            context: context,
-            firstDate: DateTime(2020),
-            lastDate: DateTime.now(),
-            initialDateRange: DateTimeRange(start: _currentStart, end: _currentEnd),
-            builder: (context, child) {
-              return Theme(
-                data: Theme.of(context).copyWith(
-                  colorScheme: const ColorScheme.light(
-                    primary: AppTheme.maroon,
-                    onPrimary: Colors.white,
-                    onSurface: AppTheme.textDark,
-                  ),
-                ),
-                child: child!,
-              );
-            },
-          );
-          if (picked != null) {
-            setState(() {
-              _currentStart = picked.start;
-              _currentEnd = DateTime(picked.end.year, picked.end.month, picked.end.day, 23, 59, 59, 999);
-
-              String startStr =
-                  "${picked.start.day.toString().padLeft(2, '0')}/${picked.start.month.toString().padLeft(2, '0')}";
-              String endStr =
-                  "${picked.end.day.toString().padLeft(2, '0')}/${picked.end.month.toString().padLeft(2, '0')}";
-
-              if (picked.start.isAtSameMomentAs(picked.end)) {
-                _selectedFilter = startStr;
-              } else {
-                _selectedFilter = "$startStr - $endStr";
-              }
-            });
-            _loadData();
-          }
+          _showEasyDateRangePicker();
         } else {
           setState(() {
             _selectedFilter = text;
@@ -409,6 +374,141 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showEasyDateRangePicker() {
+    DateTime tempStart = _currentStart;
+    DateTime tempEnd = _currentEnd;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24.r))),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final startStr = "${tempStart.day.toString().padLeft(2, '0')}/${tempStart.month.toString().padLeft(2, '0')}/${tempStart.year}";
+            final endStr = "${tempEnd.day.toString().padLeft(2, '0')}/${tempEnd.month.toString().padLeft(2, '0')}/${tempEnd.year}";
+
+            return Padding(
+              padding: EdgeInsets.all(24.r),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Pilih Rentang Waktu', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 20.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildDateButton('Mulai Tanggal', startStr, () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: tempStart,
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(primary: AppTheme.maroon, onPrimary: Colors.white, onSurface: AppTheme.textDark),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (picked != null) {
+                            setModalState(() => tempStart = picked);
+                          }
+                        }),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: _buildDateButton('Sampai Tanggal', endStr, () async {
+                          final picked = await showDatePicker(
+                            context: context,
+                            initialDate: tempEnd.isBefore(tempStart) ? tempStart : tempEnd,
+                            firstDate: tempStart,
+                            lastDate: DateTime.now(),
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(primary: AppTheme.maroon, onPrimary: Colors.white, onSurface: AppTheme.textDark),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          if (picked != null) {
+                            setModalState(() => tempEnd = picked);
+                          }
+                        }),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24.h),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.maroon,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        setState(() {
+                          _currentStart = tempStart;
+                          _currentEnd = DateTime(tempEnd.year, tempEnd.month, tempEnd.day, 23, 59, 59, 999);
+
+                          String startFormat = "${tempStart.day.toString().padLeft(2, '0')}/${tempStart.month.toString().padLeft(2, '0')}";
+                          String endFormat = "${tempEnd.day.toString().padLeft(2, '0')}/${tempEnd.month.toString().padLeft(2, '0')}";
+
+                          if (tempStart.year == tempEnd.year && tempStart.month == tempEnd.month && tempStart.day == tempEnd.day) {
+                            _selectedFilter = startFormat;
+                          } else {
+                            _selectedFilter = "$startFormat - $endFormat";
+                          }
+                        });
+                        _loadData();
+                      },
+                      child: Text('TERAPKAN', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: Colors.white)),
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDateButton(String label, String dateStr, VoidCallback onTap) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted, fontWeight: FontWeight.w600)),
+        SizedBox(height: 6.h),
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12.r),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(dateStr, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppTheme.textDark)),
+                Icon(Icons.calendar_month_rounded, size: 16.sp, color: AppTheme.maroon),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
