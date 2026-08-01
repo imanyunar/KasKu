@@ -260,12 +260,38 @@ class _ProductScreenState extends State<ProductScreen> {
                     );
                   },
                 ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: AppTheme.maroon,
-        foregroundColor: Colors.white,
-        onPressed: () => _showAddDialog(),
-        icon: Icon(Icons.add_circle_rounded, size: 22.sp),
-        label: Text('TAMBAH PRODUK', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 24.h),
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.maroon.withValues(alpha: 0.3),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+            ),
+            onPressed: () => _showAddDialog(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_circle_rounded, size: 22.sp, color: Colors.white),
+                SizedBox(width: 10.w),
+                Text(
+                  'TAMBAH PRODUK',
+                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

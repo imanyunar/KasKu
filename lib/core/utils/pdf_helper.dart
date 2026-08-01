@@ -173,22 +173,45 @@ class PdfHelper {
             pw.Divider(),
             
             // Ringkasan
-            pw.Row(
-              mainAxisAlignment: pw.MainAxisAlignment.end,
-              children: [
-                pw.Column(
+            pw.Container(
+              alignment: pw.Alignment.centerRight,
+              child: pw.Container(
+                width: 260,
+                padding: const pw.EdgeInsets.all(12),
+                decoration: pw.BoxDecoration(
+                  color: PdfColors.grey100,
+                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
+                  border: pw.Border.all(color: PdfColors.grey400),
+                ),
+                child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text("Total Pemasukan : ${CurrencyFormatter.format(totalPemasukan)}", style: const pw.TextStyle(fontSize: 13)),
-                    pw.Text("Total Pengeluaran: ${CurrencyFormatter.format(totalPengeluaran)}", style: const pw.TextStyle(fontSize: 13)),
-                    pw.SizedBox(height: 4),
-                    pw.Text(
-                      "UNTUNG / RUGI    : ${CurrencyFormatter.format(labaBersih)}", 
-                      style: pw.TextStyle(fontSize: 15, fontWeight: pw.FontWeight.bold, color: labaBersih >= 0 ? PdfColors.green800 : PdfColors.red800)
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text("Total Pemasukan", style: const pw.TextStyle(fontSize: 12)),
+                        pw.Text(CurrencyFormatter.format(totalPemasukan), style: const pw.TextStyle(fontSize: 12, color: PdfColors.green800, fontWeight: pw.FontWeight.bold)),
+                      ]
+                    ),
+                    pw.SizedBox(height: 6),
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text("Total Pengeluaran", style: const pw.TextStyle(fontSize: 12)),
+                        pw.Text(CurrencyFormatter.format(totalPengeluaran), style: const pw.TextStyle(fontSize: 12, color: PdfColors.red800, fontWeight: pw.FontWeight.bold)),
+                      ]
+                    ),
+                    pw.Divider(color: PdfColors.grey400),
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text("Saldo Kas Bersih", style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                        pw.Text(CurrencyFormatter.format(labaBersih), style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: labaBersih >= 0 ? PdfColors.green800 : PdfColors.red800)),
+                      ]
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ];
         },
