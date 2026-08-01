@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 class UpdateChecker {
   static const String _versionUrl = 
       'https://raw.githubusercontent.com/imanyunar/catatkas-web/main/public/version.json';
-  static const String currentVersion = '1.0.2';
+  static const String currentVersion = '1.0.4';
 
   static Future<void> checkUpdate(BuildContext context) async {
     try {
