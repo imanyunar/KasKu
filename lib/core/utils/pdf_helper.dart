@@ -190,7 +190,7 @@ class PdfHelper {
                     pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text("Saldo Kas Bersih", style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+                        pw.Text("Total Kas", style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
                         pw.Text(CurrencyFormatter.format(labaBersih), style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: labaBersih >= 0 ? PdfColors.green800 : PdfColors.red800)),
                       ]
                     ),

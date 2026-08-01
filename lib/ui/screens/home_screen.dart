@@ -423,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${_saldoTotal < 0 ? "- " : "+ "}${_formatCurrency(_saldoTotal)}',
+                                _formatCurrency(_saldoTotal),
                                 style: TextStyle(
                                   color: _saldoTotal >= 0 ? Colors.white : const Color(0xFFFF8A80),
                                   fontSize: 36.sp,
