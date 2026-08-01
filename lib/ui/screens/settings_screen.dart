@@ -4,6 +4,7 @@ import 'package:catatkas/core/theme.dart';
 import 'package:catatkas/core/utils/backup_helper.dart';
 import 'package:catatkas/ui/screens/product_screen.dart';
 import 'package:catatkas/ui/screens/about_screen.dart';
+import 'package:catatkas/ui/screens/guide_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -153,6 +154,23 @@ class SettingsScreen extends StatelessWidget {
               },
             ),
             
+            SizedBox(height: 24.h),
+            
+            _buildSection(
+              title: 'Panduan Penggunaan',
+              description: 'Pelajari fitur Ketik Cepat, Cetak Laporan PDF, hingga fitur lainnya.',
+              icon: Icons.menu_book_rounded,
+              buttonLabel: 'BUKA PANDUAN',
+              buttonColor: AppTheme.gold,
+              buttonTextColor: AppTheme.textDark,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GuideScreen()),
+                );
+              },
+            ),
+
             SizedBox(height: 24.h),
             
             _buildSection(

@@ -5,6 +5,7 @@ import 'package:catatkas/ui/screens/add_transaction_screen.dart';
 import 'package:catatkas/ui/screens/history_screen.dart';
 import 'package:catatkas/ui/screens/product_screen.dart';
 import 'package:catatkas/ui/screens/settings_screen.dart';
+import 'package:catatkas/ui/screens/guide_screen.dart';
 import 'package:catatkas/core/database/database_helper.dart';
 import 'package:catatkas/core/utils/currency_formatter.dart';
 import 'package:catatkas/core/utils/pdf_helper.dart';
@@ -326,20 +327,39 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14.r),
-                          border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 20.sp),
-                          tooltip: 'Pengaturan',
-                          onPressed: () async {
-                            await Navigator.push(context, _createRoute(const SettingsScreen()));
-                            _loadDashboardData();
-                          },
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14.r),
+                              border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 20.sp),
+                              tooltip: 'Panduan Penggunaan',
+                              onPressed: () {
+                                Navigator.push(context, _createRoute(const GuideScreen()));
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14.r),
+                              border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+                            ),
+                            child: IconButton(
+                              icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 20.sp),
+                              tooltip: 'Pengaturan',
+                              onPressed: () async {
+                                await Navigator.push(context, _createRoute(const SettingsScreen()));
+                                _loadDashboardData();
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

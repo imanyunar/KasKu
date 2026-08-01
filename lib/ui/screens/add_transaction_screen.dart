@@ -82,6 +82,106 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     super.dispose();
   }
 
+  void _showQuickInputHelp() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
+        child: Padding(
+          padding: EdgeInsets.all(20.r),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.r),
+                    decoration: BoxDecoration(
+                      color: AppTheme.maroon.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Icon(Icons.bolt_rounded, color: AppTheme.maroon, size: 20.sp),
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Text(
+                      'Panduan Ketik Cepat',
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.close_rounded, color: AppTheme.textMuted, size: 20.sp),
+                  ),
+                ],
+              ),
+              SizedBox(height: 14.h),
+              Text(
+                'Cukup ketik satu kalimat, aplikasi akan mengenali otomatis:',
+                style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted, height: 1.4),
+              ),
+              SizedBox(height: 12.h),
+              _buildHelpExample('Pemasukan', [
+                '"jual beras 1kg 15rb"',
+                '"terima uang sewa toko 500rb"',
+                '"pendapatan jasa servis 200.000"',
+              ], AppTheme.green, AppTheme.greenSoft),
+              SizedBox(height: 10.h),
+              _buildHelpExample('Pengeluaran', [
+                '"beli pupuk urea 2 sak 150rb"',
+                '"bayar listrik 300rb"',
+                '"pembelian token 100.000"',
+              ], AppTheme.red, AppTheme.redSoft),
+              SizedBox(height: 14.h),
+              Container(
+                padding: EdgeInsets.all(10.r),
+                decoration: BoxDecoration(
+                  color: AppTheme.gold.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.lightbulb_outline_rounded, color: AppTheme.gold, size: 16.sp),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: Text(
+                        'Singkatan: "rb" = ribu, "jt" = juta',
+                        style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: AppTheme.textDark),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHelpExample(String label, List<String> examples, Color color, Color bgColor) {
+    return Container(
+      padding: EdgeInsets.all(10.r),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: color)),
+          SizedBox(height: 4.h),
+          ...examples.map((e) => Padding(
+            padding: EdgeInsets.only(bottom: 2.h),
+            child: Text('• $e', style: TextStyle(fontSize: 11.sp, color: AppTheme.textDark, fontWeight: FontWeight.w500)),
+          )),
+        ],
+      ),
+    );
+  }
+
   Future<bool> _onWillPop() async {
     bool isDirty = false;
     
@@ -268,6 +368,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   Text(
                     'Ketik Langsung Bebas',
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: AppTheme.maroon),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => _showQuickInputHelp(),
+                    child: Container(
+                      padding: EdgeInsets.all(4.r),
+                      decoration: BoxDecoration(
+                        color: AppTheme.maroon.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.help_outline_rounded, color: AppTheme.maroon, size: 16.sp),
+                    ),
                   ),
                 ],
               ),
