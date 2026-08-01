@@ -8,7 +8,8 @@
 
 <p align="center">
   <b>Aplikasi Pencatatan Keuangan Harian UMKM Desa Manggihan</b><br/>
-  Program Pengabdian KKN GIAT 16 Universitas Negeri Semarang (UNNES)
+  Program Kerja Individu Iman Yunar Noviadhi dalam KKN GIAT 16 UNNES<br/>
+  Desa Manggihan, Kecamatan Getasan, Kabupaten Semarang
 </p>
 
 <p align="center">
@@ -128,11 +129,11 @@ CatatKas/
 
 ---
 
-## 👨‍💻 Kontributor & Tim Pengembang
+## 👨‍💻 Pengembang & Program Kerja
 
-Aplikasi ini dikembangkan sebagai bagian dari program kerja pengabdian masyarakat **GIAT 16 Universitas Negeri Semarang (UNNES)** di **Desa Manggihan, Kabupaten Semarang**.
+Aplikasi ini dikembangkan sebagai **Program Kerja Individu Iman Yunar Noviadhi** dalam kegiatan **KKN GIAT 16 Universitas Negeri Semarang (UNNES)** di **Desa Manggihan, Kecamatan Getasan, Kabupaten Semarang**.
 
-* **Tim Pengembang**: UNNES GIAT 16 Desa Manggihan
+* **Pengembang Utama**: Iman Yunar Noviadhi
 * **Repositori GitHub**: [imanyunar/KasKu](https://github.com/imanyunar/KasKu)
 
 ---
