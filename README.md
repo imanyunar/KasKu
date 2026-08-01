@@ -138,5 +138,5 @@ Aplikasi ini dikembangkan sebagai bagian dari program kerja pengabdian masyaraka
 ---
 
 <p align="center">
-  <i>Dibuat dengan ❤️ untuk kemajuan UMKM Desa Manggihan.</i>
+  <i>Didukung TIM KKN GIAT 16 UNNES untuk kemajuan UMKM Desa Manggihan.</i>
 </p>
