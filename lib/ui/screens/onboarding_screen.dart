@@ -33,6 +33,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     },
   ];
 
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void _finishOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSeenOnboarding', true);

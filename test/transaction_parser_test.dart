@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:catatkas/core/utils/transaction_parser.dart';
-import 'package:catatkas/core/models/transaction_item.dart';
+
 
 void main() {
   group('TransactionParser - Skenario Valid', () {

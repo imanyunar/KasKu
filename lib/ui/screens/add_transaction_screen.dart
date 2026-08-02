@@ -189,11 +189,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       // Jika mode Edit, cek apakah ada nilai yang berubah
       final originalName = widget.existingItem!.name;
       final originalPrice = widget.existingItem!.price.toInt().toString();
-      final originalQty = widget.existingItem!.qty.toString();
+      final originalQty = double.tryParse(widget.existingItem!.qty.toString()) ?? 1.0;
+      final currentQty = double.tryParse(_qtyController.text.trim()) ?? 1.0;
       
       if (_nameController.text.trim() != originalName ||
           _priceController.text.trim() != originalPrice ||
-          _qtyController.text.trim() != originalQty) {
+          currentQty != originalQty) {
         isDirty = true;
       }
     } else {
@@ -570,7 +571,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     focusNode: focusNode,
                     onEditingComplete: onEditingComplete,
                     onChanged: (val) {
-                      _nameController.text = val;
+                      if (_nameController.text != val) {
+                        _nameController.text = val;
+                      }
                     },
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
                     decoration: InputDecoration(
@@ -656,6 +659,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           _quickInputController.text,
           defaultIsJual: _isJual,
         );
+        // Jika mode edit, pertahankan ID dan timestamp asli
+        if (widget.existingItem != null) {
+          item = TransactionItem(
+            id: widget.existingItem!.id,
+            isJual: item.isJual,
+            name: item.name,
+            qty: item.qty,
+            unit: item.unit,
+            price: item.price,
+            timestamp: widget.existingItem!.timestamp,
+          );
+        }
       } else {
         final name = _nameController.text.trim();
         if (name.isEmpty) {

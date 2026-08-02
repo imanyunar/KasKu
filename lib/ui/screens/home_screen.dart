@@ -67,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Jika lastBackup == 0 (belum pernah sama sekali) atau sudah lewat 7 hari
     if (now - lastBackup > 604800000) {
       if (!mounted) return;
+      final sm = ScaffoldMessenger.of(context);
       showDialog(
         context: context,
         builder: (dialogContext) => Dialog(
@@ -123,7 +124,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       elevation: 0,
                     ),
                     onPressed: () async {
-                      final sm = ScaffoldMessenger.of(context);
                       Navigator.pop(dialogContext);
                       try {
                         final path = await BackupHelper.exportToCsv();

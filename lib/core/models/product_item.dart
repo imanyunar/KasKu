@@ -24,7 +24,7 @@ class ProductItem {
     return ProductItem(
       id: map['id'],
       name: map['name'],
-      defaultPrice: map['defaultPrice'],
+      defaultPrice: (map['defaultPrice'] as num).toDouble(),
       defaultUnit: map['defaultUnit'],
     );
   }

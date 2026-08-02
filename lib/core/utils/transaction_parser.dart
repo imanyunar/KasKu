@@ -125,19 +125,31 @@ class TransactionParser {
     final qty = double.tryParse(qtyStr) ?? 1.0;
 
     // Parsing Harga (Indonesian locale: 30.000 -> 30000, 30,5 -> 30.5)
+    bool hadThousandSeparator = false;
     if (priceStr.contains(',') && priceStr.contains('.')) {
       priceStr = priceStr.replaceAll('.', '').replaceAll(',', '.');
+      hadThousandSeparator = true;
     } else if (priceStr.contains(',')) {
       priceStr = priceStr.replaceAll(',', '.');
-    } else if (priceStr.contains('.') && priceStr.split('.').last.length == 3) {
-      priceStr = priceStr.replaceAll('.', '');
+    } else if (priceStr.contains('.')) {
+      // Cek apakah titik adalah pemisah ribuan (semua grup setelah titik = 3 digit)
+      final parts = priceStr.split('.');
+      final isThousandSep = parts.length > 1 && parts.skip(1).every((p) => p.length == 3);
+      if (isThousandSep) {
+        priceStr = priceStr.replaceAll('.', '');
+        hadThousandSeparator = true;
+      }
     }
     double price = double.tryParse(priceStr) ?? 0.0;
 
-    if (nominalStr == 'rb' || nominalStr == 'ribu') {
-      price *= 1000;
-    } else if (nominalStr == 'jt' || nominalStr == 'juta') {
-      price *= 1000000;
+    // Jika harga sudah diexpand dari separator ribuan, abaikan suffix rb/jt
+    // untuk mencegah "15.000rb" menjadi 15 juta
+    if (!hadThousandSeparator) {
+      if (nominalStr == 'rb' || nominalStr == 'ribu') {
+        price *= 1000;
+      } else if (nominalStr == 'jt' || nominalStr == 'juta') {
+        price *= 1000000;
+      }
     }
 
     if (price <= 0) {

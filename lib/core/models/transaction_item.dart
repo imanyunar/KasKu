@@ -36,9 +36,9 @@ class TransactionItem {
       id: map['id'],
       isJual: map['isJual'] == 1,
       name: map['name'],
-      qty: map['qty'],
+      qty: (map['qty'] as num).toDouble(),
       unit: map['unit'],
-      price: map['price'],
+      price: (map['price'] as num).toDouble(),
       timestamp: DateTime.parse(map['timestamp']),
     );
   }

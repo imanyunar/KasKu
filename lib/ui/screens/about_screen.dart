@@ -34,7 +34,7 @@ class AboutScreen extends StatelessWidget {
               style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Versi 1.0.2',
+              'Versi 1.0.5',
               style: TextStyle(fontSize: 18.sp, color: Colors.black54),
             ),
             SizedBox(height: 32.h),

@@ -30,14 +30,15 @@ class SettingsScreen extends StatelessWidget {
           children: [
             _buildSection(
               title: 'Penyimpanan Data Aman',
-              description: 'Simpan salinan (backup) catatan kas ke HP Anda. File akan tersimpan di folder Download agar mudah dipindahkan ke HP baru.',
+              description: 'Simpan salinan (backup) catatan kas ke HP Anda. File dapat dibagikan langsung ke WhatsApp atau Google Drive agar tetap aman.',
               icon: Icons.cloud_download_rounded,
               buttonLabel: 'BACKUP KE FOLDER DOWNLOAD',
               buttonColor: AppTheme.maroon,
               buttonTextColor: Colors.white,
               onPressed: () async {
+                final sm = ScaffoldMessenger.of(context);
                 try {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  sm.showSnackBar(
                     SnackBar(content: Text('Sedang membuat file... Tunggu sebentar.', style: TextStyle(fontSize: 16.sp))),
                   );
                   
@@ -48,7 +49,7 @@ class SettingsScreen extends StatelessWidget {
                   
                   if (!context.mounted) return;
                   
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  sm.showSnackBar(
                     SnackBar(
                       content: Text('SUKSES! Data berhasil di-backup.', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                       backgroundColor: AppTheme.green,
@@ -70,7 +71,7 @@ class SettingsScreen extends StatelessWidget {
                   } else if (errorMsg.contains('PlatformException')) {
                     errorMsg = 'Akses ditolak atau terjadi kesalahan pada sistem Android Anda.';
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  sm.showSnackBar(
                     SnackBar(
                       content: Text('Gagal: $errorMsg', style: TextStyle(fontSize: 16.sp)),
                       backgroundColor: AppTheme.red,
@@ -95,6 +96,34 @@ class SettingsScreen extends StatelessWidget {
               isOutline: true,
               onPressed: () async {
                 try {
+                  // Konfirmasi sebelum restore untuk mencegah duplikasi data
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                      title: Text('Restore Data?', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                      content: Text(
+                        'Data dari file CSV akan DITAMBAHKAN ke data yang sudah ada. Jika Anda pernah restore file ini sebelumnya, data bisa terduplikat.\n\nLanjutkan?',
+                        style: TextStyle(fontSize: 14.sp, height: 1.5),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text('BATAL', style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.maroon,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                          ),
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text('YA, RESTORE', style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm != true) return;
+
                   FilePickerResult? result = await FilePicker.platform.pickFiles(
                     type: FileType.custom,
                     allowedExtensions: ['csv'],
@@ -102,14 +131,15 @@ class SettingsScreen extends StatelessWidget {
 
                   if (result != null && result.files.single.path != null) {
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    final sm = ScaffoldMessenger.of(context);
+                    sm.showSnackBar(
                       SnackBar(content: Text('Sedang mengimpor data...', style: TextStyle(fontSize: 16.sp))),
                     );
 
                     final count = await BackupHelper.importFromCsv(result.files.single.path!);
 
                     if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    sm.showSnackBar(
                       SnackBar(
                         content: Text('SUKSES! Berhasil mengembalikan $count data.', style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
                         backgroundColor: AppTheme.green,
@@ -129,7 +159,8 @@ class SettingsScreen extends StatelessWidget {
                   } else if (errorMsg.contains('PlatformException')) {
                     errorMsg = 'Akses ditolak atau file CSV tidak didukung sistem Android Anda.';
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  final smErr = ScaffoldMessenger.of(context);
+                  smErr.showSnackBar(
                     SnackBar(
                       content: Text('Gagal Restore: $errorMsg', style: TextStyle(fontSize: 16.sp)),
                       backgroundColor: AppTheme.red,

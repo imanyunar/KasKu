@@ -54,8 +54,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
-    _updateDateRange();
-
+    // Hanya update date range untuk filter standar, bukan custom
+    if (!_isCustomMode()) {
+      _updateDateRange();
+    }
     final db = await DatabaseHelper.instance.database;
     final startStr = _currentStart.toIso8601String();
     final endStr = _currentEnd.toIso8601String();
@@ -144,7 +146,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           duration: const Duration(seconds: 8),
           showCloseIcon: true,
           closeIconColor: Colors.white,
-          content: Text('PDF Berhasil Dibuat & Tersimpan di Download',
+          content: Text('PDF Berhasil Dibuat',
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold)),
           action: SnackBarAction(
             label: 'BAGIKAN',
