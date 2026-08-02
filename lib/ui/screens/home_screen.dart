@@ -336,7 +336,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 20.sp),
+                              padding: EdgeInsets.all(8.r),
+                              constraints: const BoxConstraints(),
+                              icon: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 18.sp),
                               tooltip: 'Panduan Penggunaan',
                               onPressed: () {
                                 Navigator.push(context, _createRoute(const GuideScreen()));
@@ -351,7 +353,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 20.sp),
+                              padding: EdgeInsets.all(8.r),
+                              constraints: const BoxConstraints(),
+                              icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 18.sp),
                               tooltip: 'Pengaturan',
                               onPressed: () async {
                                 await Navigator.push(context, _createRoute(const SettingsScreen()));
