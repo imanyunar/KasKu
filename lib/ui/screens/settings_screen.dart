@@ -8,7 +8,7 @@ import 'package:catatkas/ui/screens/about_screen.dart';
 import 'package:catatkas/ui/screens/guide_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -204,6 +204,28 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => const GuideScreen()),
                 );
+              },
+            ),
+
+            SizedBox(height: 24.h),
+            
+            _buildSection(
+              title: 'Bantuan & Dukungan',
+              description: 'Ada kendala atau pertanyaan? Hubungi kami langsung melalui WhatsApp.',
+              icon: Icons.chat_bubble_outline_rounded,
+              buttonLabel: 'HUBUNGI WHATSAPP',
+              buttonColor: const Color(0xFF25D366), // Warna hijau khas WhatsApp
+              buttonTextColor: Colors.white,
+              onPressed: () async {
+                // Ganti dengan nomor WhatsApp Anda yang benar
+                final Uri url = Uri.parse('https://wa.me/6287873861108?text=Halo%20Admin%20CatatKas,%20saya%20butuh%20bantuan');
+                if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Gagal membuka WhatsApp')),
+                    );
+                  }
+                }
               },
             ),
 
