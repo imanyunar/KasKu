@@ -222,7 +222,7 @@ class SettingsScreen extends StatelessWidget {
                 if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Gagal membuka WhatsApp')),
+                      const SnackBar(content: Text('Gagal membuka WhatsApp')),
                     );
                   }
                 }
