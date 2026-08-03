@@ -329,38 +329,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.all(4.r),
-                              constraints: const BoxConstraints(),
-                              icon: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 18.sp),
-                              tooltip: 'Panduan Penggunaan',
-                              onPressed: () {
+                          Material(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8.r),
+                              onTap: () {
                                 Navigator.push(context, _createRoute(const GuideScreen()));
                               },
+                              child: Container(
+                                padding: EdgeInsets.all(6.r),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+                                ),
+                                child: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 18.sp),
+                              ),
                             ),
                           ),
                           SizedBox(width: 8.w),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.r),
-                              border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.all(4.r),
-                              constraints: const BoxConstraints(),
-                              icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 18.sp),
-                              tooltip: 'Pengaturan',
-                              onPressed: () async {
+                          Material(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.r),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8.r),
+                              onTap: () async {
                                 await Navigator.push(context, _createRoute(const SettingsScreen()));
                                 _loadDashboardData();
                               },
+                              child: Container(
+                                padding: EdgeInsets.all(6.r),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
+                                ),
+                                child: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 18.sp),
+                              ),
                             ),
                           ),
                         ],
