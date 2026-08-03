@@ -332,11 +332,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.r),
+                              borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                             ),
                             child: IconButton(
-                              padding: EdgeInsets.all(8.r),
+                              padding: EdgeInsets.all(4.r),
                               constraints: const BoxConstraints(),
                               icon: Icon(Icons.help_outline_rounded, color: AppTheme.gold, size: 18.sp),
                               tooltip: 'Panduan Penggunaan',
@@ -349,11 +349,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.r),
+                              borderRadius: BorderRadius.circular(10.r),
                               border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
                             ),
                             child: IconButton(
-                              padding: EdgeInsets.all(8.r),
+                              padding: EdgeInsets.all(4.r),
                               constraints: const BoxConstraints(),
                               icon: Icon(Icons.tune_rounded, color: AppTheme.maroon, size: 18.sp),
                               tooltip: 'Pengaturan',
