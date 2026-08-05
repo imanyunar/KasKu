@@ -22,7 +22,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -39,9 +39,18 @@ CREATE TABLE products (
   id $idType,
   name $textType,
   defaultPrice $realType,
-  defaultUnit $textType
+  defaultUnit $textType,
+  stock REAL NOT NULL DEFAULT 0
 )
 ''');
+    }
+    if (oldVersion < 3) {
+      // Tambah kolom stock untuk pengguna yang sudah punya tabel products
+      try {
+        await db.execute('ALTER TABLE products ADD COLUMN stock REAL NOT NULL DEFAULT 0');
+      } catch (_) {
+        // Kolom sudah ada (jika user baru install langsung dari v3)
+      }
     }
   }
 
@@ -68,7 +77,8 @@ CREATE TABLE products (
   id $idType,
   name $textType,
   defaultPrice $realType,
-  defaultUnit $textType
+  defaultUnit $textType,
+  stock $realType DEFAULT 0
 )
 ''');
   }
@@ -213,6 +223,7 @@ CREATE TABLE products (
       name: item.name,
       defaultPrice: item.defaultPrice,
       defaultUnit: item.defaultUnit,
+      stock: item.stock,
     );
   }
 
@@ -235,6 +246,58 @@ CREATE TABLE products (
   Future<int> deleteProduct(int id) async {
     final db = await instance.database;
     return await db.delete('products', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- Fungsi Update Stok ---
+  Future<int> updateStock(int id, double newStock) async {
+    final db = await instance.database;
+    return await db.update(
+      'products',
+      {'stock': newStock},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// Kurangi stok otomatis berdasarkan nama produk.
+  /// Dipanggil setelah transaksi berhasil disimpan.
+  Future<void> deductStockByName(String productName, double qty) async {
+    final db = await instance.database;
+    final results = await db.query(
+      'products',
+      where: 'LOWER(name) = ?',
+      whereArgs: [productName.toLowerCase()],
+    );
+    if (results.isNotEmpty) {
+      final product = ProductItem.fromMap(results.first);
+      final newStock = (product.stock - qty).clamp(0, double.infinity);
+      await db.update(
+        'products',
+        {'stock': newStock},
+        where: 'id = ?',
+        whereArgs: [product.id],
+      );
+    }
+  }
+
+  /// Tambah stok otomatis saat ada pembelian/beli bahan.
+  Future<void> addStockByName(String productName, double qty) async {
+    final db = await instance.database;
+    final results = await db.query(
+      'products',
+      where: 'LOWER(name) = ?',
+      whereArgs: [productName.toLowerCase()],
+    );
+    if (results.isNotEmpty) {
+      final product = ProductItem.fromMap(results.first);
+      final newStock = product.stock + qty;
+      await db.update(
+        'products',
+        {'stock': newStock},
+        where: 'id = ?',
+        whereArgs: [product.id],
+      );
+    }
   }
 
   Future close() async {

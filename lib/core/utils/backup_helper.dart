@@ -39,13 +39,14 @@ class BackupHelper {
     // Section: Produk
     csvData.add([]); // Baris kosong pemisah
     csvData.add(["[PRODUK]"]);
-    csvData.add(["ID", "Nama", "Harga Default", "Satuan Default"]);
+    csvData.add(["ID", "Nama", "Harga Default", "Satuan Default", "Stok"]);
     for (var item in products) {
       csvData.add([
         item.id,
         item.name,
         item.defaultPrice,
         item.defaultUnit,
+        item.stock,
       ]);
     }
 
@@ -113,6 +114,7 @@ class BackupHelper {
             name: row[1].toString(),
             defaultPrice: double.tryParse(row[2].toString()) ?? 0.0,
             defaultUnit: row[3].toString(),
+            stock: row.length >= 5 ? (double.tryParse(row[4].toString()) ?? 0.0) : 0.0,
           );
           await DatabaseHelper.instance.insertProduct(item);
           importedCount++;

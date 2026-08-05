@@ -37,6 +37,8 @@ class _ProductScreenState extends State<ProductScreen> {
     final priceController = TextEditingController(
         text: existingItem?.defaultPrice.toInt().toString() ?? '');
     final unitController = TextEditingController(text: existingItem?.defaultUnit ?? 'pcs');
+    final stockController = TextEditingController(
+        text: existingItem != null ? existingItem.stock.toString() : '0');
 
     showDialog(
       context: context,
@@ -65,6 +67,12 @@ class _ProductScreenState extends State<ProductScreen> {
                 CustomTextField(
                   controller: unitController,
                   labelText: 'Satuan (kg/pcs)',
+                ),
+                SizedBox(height: 16.h),
+                CustomTextField(
+                  controller: stockController,
+                  labelText: 'Jumlah Stok Saat Ini',
+                  keyboardType: TextInputType.number,
                 ),
               ],
             ),
@@ -95,6 +103,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     name: name,
                     defaultPrice: price,
                     defaultUnit: unit,
+                    stock: double.tryParse(stockController.text) ?? 0,
                   );
                   
                   if (existingItem != null) {
@@ -242,6 +251,30 @@ class _ProductScreenState extends State<ProductScreen> {
                                       Text(
                                         '${CurrencyFormatter.format(item.defaultPrice)} / ${item.defaultUnit}',
                                         style: TextStyle(fontSize: 12.sp, color: AppTheme.textMuted),
+                                      ),
+                                      SizedBox(height: 4.h),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                                            decoration: BoxDecoration(
+                                              color: item.stock > 0
+                                                  ? Colors.green.withValues(alpha: 0.1)
+                                                  : Colors.red.withValues(alpha: 0.1),
+                                              borderRadius: BorderRadius.circular(8.r),
+                                            ),
+                                            child: Text(
+                                              item.stock > 0
+                                                  ? 'Stok: ${item.stock % 1 == 0 ? item.stock.toInt() : item.stock} ${item.defaultUnit}'
+                                                  : 'Stok Habis',
+                                              style: TextStyle(
+                                                fontSize: 11.sp,
+                                                fontWeight: FontWeight.w700,
+                                                color: item.stock > 0 ? Colors.green.shade700 : Colors.red.shade600,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),

@@ -709,6 +709,18 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         await DatabaseHelper.instance.insertTransaction(item);
       }
 
+      // Otomatis update stok produk (jika nama barang cocok di Daftar Produk)
+      if (widget.existingItem == null) {
+        // Hanya untuk transaksi baru (bukan edit)
+        if (item.isJual) {
+          // Jual → kurangi stok
+          await DatabaseHelper.instance.deductStockByName(item.name, item.qty);
+        } else {
+          // Beli → tambah stok
+          await DatabaseHelper.instance.addStockByName(item.name, item.qty);
+        }
+      }
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
